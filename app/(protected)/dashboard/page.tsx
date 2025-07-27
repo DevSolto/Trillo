@@ -1,13 +1,7 @@
-import { LogoutButton } from '@/components/logout-button'
-import { createClient } from '@/lib/server'
-
-export default async function Dashboard() {
+export default function DashboardPage() {
   return (
-    <div className="flex h-svh w-full items-center justify-center gap-2">
-      <p>
-        Hello <span></span>
-      </p>
-      <LogoutButton />
+    <div className="p-6">
+      <h1 className="text-2xl font-semibold mb-2">Dashboard</h1>
     </div>
   )
 }
