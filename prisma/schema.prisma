@@ -1,0 +1,82 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Associacao {
+  id     String @id @default(uuid()) @db.Uuid
+  nome   String
+  cnpj   String
+  cidade String
+  estado String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tarefas Tarefa[]
+}
+
+model Usuario {
+  id      String @id @default(uuid()) @db.Uuid
+  nome    String
+  user_id String
+  funcao  String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tarefasCriadas     Tarefa[] @relation("CriadorTarefa")
+  tarefasResponsavel Tarefa[] @relation("ResponsavelTarefa")
+  statusCriados      Status[]
+  tiposCriados       Tipo[]
+}
+
+model Status {
+  id        String  @id @default(uuid()) @db.Uuid
+  nome      String
+  descricao String
+  criador   Usuario @relation(fields: [criadorId], references: [id])
+  criadorId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tarefas   Tarefa[]
+}
+
+model Tipo {
+  id        String  @id @default(uuid()) @db.Uuid
+  nome      String
+  descricao String
+  criador   Usuario @relation(fields: [criadorId], references: [id])
+  criadorId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tarefas   Tarefa[]
+}
+
+model Tarefa {
+  id            String     @id @default(uuid()) @db.Uuid
+  titulo        String
+  descricao     String
+  prioridade    String
+  associacao    Associacao @relation(fields: [associacaoId], references: [id])
+  associacaoId  String
+  criador       Usuario    @relation("CriadorTarefa", fields: [criadorId], references: [id])
+  criadorId     String
+  responsavel   Usuario    @relation("ResponsavelTarefa", fields: [responsavelId], references: [id])
+  responsavelId String
+  status        Status     @relation(fields: [statusId], references: [id])
+  statusId      String
+  tipo          Tipo       @relation(fields: [tipoId], references: [id])
+  tipoId        String
+  data_inicio   DateTime
+  data_fim      DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
