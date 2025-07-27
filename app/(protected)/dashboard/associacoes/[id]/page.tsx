@@ -1,8 +1,4 @@
-interface AssociacaoPageProps {
-  params: { id: string }
-}
-
-export default function AssociacaoPage({ params }: AssociacaoPageProps) {
+export default function AssociacaoPage({ params }: any) {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-semibold mb-2">Detalhes da Associação</h1>
