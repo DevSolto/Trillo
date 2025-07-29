@@ -12,7 +12,23 @@ Sistema web voltado para escritórios de contabilidade que atendem múltiplas **
   - `usecases` → lógica de negócio pura
   - `repositories` → persistência via Prisma ORM
 - **Banco de Dados:** PostgreSQL (via Supabase)
-- **Autenticação:** Supabase Auth com vínculo entre `user.id` e `PerfilUsuario`
+  - **Autenticação:** Supabase Auth com vínculo entre `user.id` e `PerfilUsuario`
+
+---
+
+## 📁 Estrutura de Diretórios
+
+```
+src/
+├── app/                 # Frontend com rotas e páginas
+└── backend/
+    ├── prisma/          # Cliente Prisma
+    ├── usecases/        # Casos de uso por domínio
+    ├── repositories/    # Repositórios por domínio
+    ├── entities/        # Tipos e validações
+    ├── shared/          # Erros e validadores
+    └── tests/           # Testes E2E/funcionais
+```
 
 ---
 
