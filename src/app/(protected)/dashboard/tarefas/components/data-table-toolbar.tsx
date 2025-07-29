@@ -6,6 +6,7 @@ import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { DataTableViewOptions } from "./data-table-view-options"
+import { AddTaskDialog } from "./add-task-dialog"
 
 import { priorities, statuses } from "../data/data"
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
@@ -41,7 +42,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
       </div>
       <div className="flex items-center gap-2">
         <DataTableViewOptions table={table} />
-        <Button size="sm">Adicionar Tarefa</Button>
+        <AddTaskDialog />
       </div>
     </div>
   )
