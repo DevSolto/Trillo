@@ -21,7 +21,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center gap-2">
         <Input
-          placeholder="Filter tasks..."
+          placeholder="Filtrar tarefas..."
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) => table.getColumn("title")?.setFilterValue(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
@@ -30,18 +30,18 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
           <DataTableFacetedFilter column={table.getColumn("status")!} title="Status" options={statuses} />
         )}
         {table.getColumn("priority") && (
-          <DataTableFacetedFilter column={table.getColumn("priority")!} title="Priority" options={priorities} />
+          <DataTableFacetedFilter column={table.getColumn("priority")!} title="Prioridade" options={priorities} />
         )}
         {isFiltered && (
           <Button variant="ghost" size="sm" onClick={() => table.resetColumnFilters()}>
-            Reset
+            Limpar
             <X />
           </Button>
         )}
       </div>
       <div className="flex items-center gap-2">
         <DataTableViewOptions table={table} />
-        <Button size="sm">Add Task</Button>
+        <Button size="sm">Adicionar Tarefa</Button>
       </div>
     </div>
   )

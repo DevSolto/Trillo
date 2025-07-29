@@ -12,15 +12,15 @@ import {
 export const labels = [
   {
     value: "bug",
-    label: "Bug",
+    label: "Erro",
   },
   {
     value: "feature",
-    label: "Feature",
+    label: "Funcionalidade",
   },
   {
     value: "documentation",
-    label: "Documentation",
+    label: "Documentação",
   },
 ]
 
@@ -32,39 +32,39 @@ export const statuses = [
   },
   {
     value: "todo",
-    label: "Todo",
+    label: "A Fazer",
     icon: Circle,
   },
   {
     value: "in progress",
-    label: "In Progress",
+    label: "Em Andamento",
     icon: Timer,
   },
   {
     value: "done",
-    label: "Done",
+    label: "Concluída",
     icon: CheckCircle,
   },
   {
     value: "canceled",
-    label: "Canceled",
+    label: "Cancelada",
     icon: CircleOff,
   },
 ]
 
 export const priorities = [
   {
-    label: "Low",
+    label: "Baixa",
     value: "low",
     icon: ArrowDown,
   },
   {
-    label: "Medium",
+    label: "Média",
     value: "medium",
     icon: ArrowRight,
   },
   {
-    label: "High",
+    label: "Alta",
     value: "high",
     icon: ArrowUp,
   },
