@@ -21,7 +21,6 @@ model Associacao {
 
   tarefas Tarefa[]
 
-  @@schema("public")
 }
 
 model Usuario {
@@ -38,7 +37,6 @@ model Usuario {
   statusCriados      Status[]
   tiposCriados       Tipo[]
   
-  @@schema("public")
 }
 
 model Status {
@@ -52,7 +50,6 @@ model Status {
   updatedAt DateTime @updatedAt
   tarefas   Tarefa[]
   
-  @@schema("public")
 }
 
 model Tipo {
@@ -66,7 +63,6 @@ model Tipo {
   updatedAt DateTime @updatedAt
   tarefas   Tarefa[]
   
-  @@schema("public")
 }
 
 model Tarefa {
@@ -96,5 +92,4 @@ model Tarefa {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   
-  @@schema("public")
 }
