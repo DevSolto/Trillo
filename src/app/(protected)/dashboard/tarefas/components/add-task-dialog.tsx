@@ -23,6 +23,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select'
+import { priorities, usuarios, associacoes, tipos } from './data'
 import {
   Form,
   FormField,
@@ -31,7 +32,6 @@ import {
   FormControl,
   FormMessage,
 } from '@/components/ui/form'
-import { priorities, usuarios, associacoes, tipos } from '../data/data'
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Título é obrigatório' }),
