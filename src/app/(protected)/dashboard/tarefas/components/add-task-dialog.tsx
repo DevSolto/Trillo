@@ -74,7 +74,7 @@ export function AddTaskDialog() {
           <div className="grid gap-2">
             <Label htmlFor="description">Descrição</Label>
             <Textarea
-              id="description"
+              id="ldescription"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
