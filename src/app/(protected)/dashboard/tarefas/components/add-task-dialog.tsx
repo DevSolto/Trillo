@@ -60,9 +60,23 @@ export function AddTaskDialog() {
     mode: 'onChange',
   })
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    // TODO: integrate with backend
-    console.log({ ...data, status: 'todo' })
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    await fetch('/api/tarefas/criar', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        titulo: data.title,
+        descricao: data.description,
+        prioridade: data.priority,
+        responsavelId: data.responsavel,
+        associacaoId: data.associacao,
+        tipoId: data.tipo,
+        data_fim: data.dataFim,
+        statusId: 'todo'
+      })
+    })
     setOpen(false)
     form.reset()
   }
