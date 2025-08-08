@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { DatePicker } from '@/components/ui/date-picker'
 import {
   Dialog,
   DialogTrigger,
@@ -19,24 +21,40 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select'
-import { priorities, statuses, labels } from '../data/data'
+import { priorities, usuarios, associacoes, tipos } from '../data/data'
 
 export function AddTaskDialog() {
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
-  const [status, setStatus] = useState<string>(statuses[0].value)
+  const [description, setDescription] = useState('')
   const [priority, setPriority] = useState<string>(priorities[1].value)
-  const [label, setLabel] = useState<string>(labels[0].value)
+  const [responsavel, setResponsavel] = useState<string>(usuarios[0].value)
+  const [associacao, setAssociacao] = useState<string>(associacoes[0].value)
+  const [tipo, setTipo] = useState<string>(tipos[0].value)
+  const [dataFim, setDataFim] = useState<Date | undefined>()
+  const status = 'todo'
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // TODO: integrate with backend
-    console.log({ title, status, priority, label })
+    console.log({
+      title,
+      description,
+      status,
+      priority,
+      responsavel,
+      associacao,
+      tipo,
+      dataFim,
+    })
     setOpen(false)
     setTitle('')
-    setStatus(statuses[0].value)
+    setDescription('')
     setPriority(priorities[1].value)
-    setLabel(labels[0].value)
+    setResponsavel(usuarios[0].value)
+    setAssociacao(associacoes[0].value)
+    setTipo(tipos[0].value)
+    setDataFim(undefined)
   }
 
   return (
@@ -54,19 +72,13 @@ export function AddTaskDialog() {
             <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="status">Status</Label>
-            <Select value={status} onValueChange={setStatus}>
-              <SelectTrigger id="status">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {statuses.map((s) => (
-                  <SelectItem key={s.value} value={s.value}>
-                    {s.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label htmlFor="description">Descrição</Label>
+            <Textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+            />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="priority">Prioridade</Label>
@@ -84,19 +96,53 @@ export function AddTaskDialog() {
             </Select>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="label">Rótulo</Label>
-            <Select value={label} onValueChange={setLabel}>
-              <SelectTrigger id="label">
+            <Label htmlFor="responsavel">Responsável</Label>
+            <Select value={responsavel} onValueChange={setResponsavel}>
+              <SelectTrigger id="responsavel">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {labels.map((l) => (
-                  <SelectItem key={l.value} value={l.value}>
-                    {l.label}
+                {usuarios.map((u) => (
+                  <SelectItem key={u.value} value={u.value}>
+                    {u.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="associacao">Associação</Label>
+            <Select value={associacao} onValueChange={setAssociacao}>
+              <SelectTrigger id="associacao">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {associacoes.map((a) => (
+                  <SelectItem key={a.value} value={a.value}>
+                    {a.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="tipo">Tipo</Label>
+            <Select value={tipo} onValueChange={setTipo}>
+              <SelectTrigger id="tipo">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {tipos.map((t) => (
+                  <SelectItem key={t.value} value={t.value}>
+                    {t.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid gap-2">
+            <Label>Data de término</Label>
+            <DatePicker date={dataFim} onChange={setDataFim} />
           </div>
           <DialogFooter>
             <Button variant="outline" type="button" onClick={() => setOpen(false)}>
