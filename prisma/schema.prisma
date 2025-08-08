@@ -281,126 +281,126 @@ model sso_providers {
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model users {
-  instance_id                 String?           @db.Uuid
-  id                          String            @id @db.Uuid
-  aud                         String?           @db.VarChar(255)
-  role                        String?           @db.VarChar(255)
-  email                       String?           @db.VarChar(255)
-  encrypted_password          String?           @db.VarChar(255)
-  email_confirmed_at          DateTime?         @db.Timestamptz(6)
-  invited_at                  DateTime?         @db.Timestamptz(6)
-  confirmation_token          String?           @db.VarChar(255)
-  confirmation_sent_at        DateTime?         @db.Timestamptz(6)
-  recovery_token              String?           @db.VarChar(255)
-  recovery_sent_at            DateTime?         @db.Timestamptz(6)
-  email_change_token_new      String?           @db.VarChar(255)
-  email_change                String?           @db.VarChar(255)
-  email_change_sent_at        DateTime?         @db.Timestamptz(6)
-  last_sign_in_at             DateTime?         @db.Timestamptz(6)
-  raw_app_meta_data           Json?
-  raw_user_meta_data          Json?
-  is_super_admin              Boolean?
-  created_at                  DateTime?         @db.Timestamptz(6)
-  updated_at                  DateTime?         @db.Timestamptz(6)
-  phone                       String?           @unique
-  phone_confirmed_at          DateTime?         @db.Timestamptz(6)
-  phone_change                String?           @default("")
-  phone_change_token          String?           @default("") @db.VarChar(255)
-  phone_change_sent_at        DateTime?         @db.Timestamptz(6)
-  confirmed_at                DateTime?         @default(dbgenerated("LEAST(email_confirmed_at, phone_confirmed_at)")) @db.Timestamptz(6)
-  email_change_token_current  String?           @default("") @db.VarChar(255)
-  email_change_confirm_status Int?              @default(0) @db.SmallInt
-  banned_until                DateTime?         @db.Timestamptz(6)
-  reauthentication_token      String?           @default("") @db.VarChar(255)
-  reauthentication_sent_at    DateTime?         @db.Timestamptz(6)
-  is_sso_user                 Boolean           @default(false)
-  deleted_at                  DateTime?         @db.Timestamptz(6)
-  is_anonymous                Boolean           @default(false)
-  identities                  identities[]
-  mfa_factors                 mfa_factors[]
-  one_time_tokens             one_time_tokens[]
-  sessions                    sessions[]
-  Usuario                     Usuario[]
+  instance_id                        String?           @db.Uuid
+  id                                 String            @id @db.Uuid
+  aud                                String?           @db.VarChar(255)
+  role                               String?           @db.VarChar(255)
+  email                              String?           @db.VarChar(255)
+  encrypted_password                 String?           @db.VarChar(255)
+  email_confirmed_at                 DateTime?         @db.Timestamptz(6)
+  invited_at                         DateTime?         @db.Timestamptz(6)
+  confirmation_token                 String?           @db.VarChar(255)
+  confirmation_sent_at               DateTime?         @db.Timestamptz(6)
+  recovery_token                     String?           @db.VarChar(255)
+  recovery_sent_at                   DateTime?         @db.Timestamptz(6)
+  email_change_token_new             String?           @db.VarChar(255)
+  email_change                       String?           @db.VarChar(255)
+  email_change_sent_at               DateTime?         @db.Timestamptz(6)
+  last_sign_in_at                    DateTime?         @db.Timestamptz(6)
+  raw_app_meta_data                  Json?
+  raw_user_meta_data                 Json?
+  is_super_admin                     Boolean?
+  created_at                         DateTime?         @db.Timestamptz(6)
+  updated_at                         DateTime?         @db.Timestamptz(6)
+  phone                              String?           @unique
+  phone_confirmed_at                 DateTime?         @db.Timestamptz(6)
+  phone_change                       String?           @default("")
+  phone_change_token                 String?           @default("") @db.VarChar(255)
+  phone_change_sent_at               DateTime?         @db.Timestamptz(6)
+  confirmed_at                       DateTime?         @default(dbgenerated("LEAST(email_confirmed_at, phone_confirmed_at)")) @db.Timestamptz(6)
+  email_change_token_current         String?           @default("") @db.VarChar(255)
+  email_change_confirm_status        Int?              @default(0) @db.SmallInt
+  banned_until                       DateTime?         @db.Timestamptz(6)
+  reauthentication_token             String?           @default("") @db.VarChar(255)
+  reauthentication_sent_at           DateTime?         @db.Timestamptz(6)
+  is_sso_user                        Boolean           @default(false)
+  deleted_at                         DateTime?         @db.Timestamptz(6)
+  is_anonymous                       Boolean           @default(false)
+  identities                         identities[]
+  mfa_factors                        mfa_factors[]
+  one_time_tokens                    one_time_tokens[]
+  sessions                           sessions[]
+  status                             status[]
+  tarefa_tarefa_criadoridTousers     tarefa[]          @relation("tarefa_criadoridTousers")
+  tarefa_tarefa_responsavelidTousers tarefa[]          @relation("tarefa_responsavelidTousers")
+  tipo                               tipo[]
+  usuario                            usuario[]
 
   @@index([instance_id])
   @@index([is_anonymous])
   @@schema("auth")
 }
 
-model Associacao {
-  id        String   @id @db.Uuid
-  nome      String
-  cnpj      String
-  cidade    String
-  estado    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-  Tarefa    Tarefa[]
+model associacao {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nome      String    @db.VarChar
+  cnpj      String?   @db.VarChar(14)
+  cidade    String?   @db.VarChar(255)
+  estado    String?   @db.VarChar(2)
+  createdat DateTime? @default(now()) @db.Timestamptz(6)
+  updatedat DateTime? @default(now()) @db.Timestamptz(6)
+  tarefa    tarefa[]
 
   @@schema("public")
 }
 
-model Status {
-  id        String   @id @db.Uuid
-  nome      String
-  descricao String
-  criadorId String   @db.Uuid
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-  Usuario   Usuario  @relation(fields: [criadorId], references: [id])
-  Tarefa    Tarefa[]
+model status {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nome      String    @db.VarChar
+  descricao String?
+  criadorid String?   @db.Uuid
+  createdat DateTime? @default(now()) @db.Timestamptz(6)
+  updatedat DateTime? @default(now()) @db.Timestamptz(6)
+  users     users?    @relation(fields: [criadorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tarefa    tarefa[]
 
   @@schema("public")
 }
 
-model Tarefa {
-  id                                    String     @id @db.Uuid
-  titulo                                String
-  descricao                             String
-  prioridade                            String
-  associacaoId                          String     @db.Uuid
-  criadorId                             String     @db.Uuid
-  responsavelId                         String     @db.Uuid
-  statusId                              String     @db.Uuid
-  tipoId                                String     @db.Uuid
-  data_inicio                           DateTime
-  data_fim                              DateTime
-  createdAt                             DateTime   @default(now())
-  updatedAt                             DateTime
-  Associacao                            Associacao @relation(fields: [associacaoId], references: [id])
-  Usuario_Tarefa_criadorIdToUsuario     Usuario    @relation("Tarefa_criadorIdToUsuario", fields: [criadorId], references: [id])
-  Usuario_Tarefa_responsavelIdToUsuario Usuario    @relation("Tarefa_responsavelIdToUsuario", fields: [responsavelId], references: [id])
-  Status                                Status     @relation(fields: [statusId], references: [id])
-  Tipo                                  Tipo       @relation(fields: [tipoId], references: [id])
+model tarefa {
+  id                                String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  titulo                            String      @db.VarChar
+  descricao                         String?
+  prioridade                        String?     @db.VarChar
+  associacaoid                      String?     @db.Uuid
+  criadorid                         String?     @db.Uuid
+  responsavelid                     String?     @db.Uuid
+  statusid                          String?     @db.Uuid
+  tipoid                            String?     @db.Uuid
+  data_inicio                       DateTime?   @db.Timestamptz(6)
+  data_fim                          DateTime?   @db.Timestamptz(6)
+  createdat                         DateTime?   @default(now()) @db.Timestamptz(6)
+  updatedat                         DateTime?   @default(now()) @db.Timestamptz(6)
+  associacao                        associacao? @relation(fields: [associacaoid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_tarefa_criadoridTousers     users?      @relation("tarefa_criadoridTousers", fields: [criadorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users_tarefa_responsavelidTousers users?      @relation("tarefa_responsavelidTousers", fields: [responsavelid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  status                            status?     @relation(fields: [statusid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tipo                              tipo?       @relation(fields: [tipoid], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@schema("public")
 }
 
-model Tipo {
-  id        String   @id @db.Uuid
-  nome      String
-  descricao String
-  criadorId String   @db.Uuid
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-  Tarefa    Tarefa[]
-  Usuario   Usuario  @relation(fields: [criadorId], references: [id])
+model tipo {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nome      String    @db.VarChar
+  descricao String?
+  criadorid String?   @db.Uuid
+  createdat DateTime? @default(now()) @db.Timestamptz(6)
+  updatedat DateTime? @default(now()) @db.Timestamptz(6)
+  tarefa    tarefa[]
+  users     users?    @relation(fields: [criadorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@schema("public")
 }
 
-model Usuario {
-  id                                   String    @id @default(dbgenerated("auth.uid()")) @db.Uuid
-  nome                                 String
-  funcao                               USER_ROLE @default(COLABORADOR)
-  createdAt                            DateTime  @default(now())
-  updatedAt                            DateTime  @default(now()) @db.Timestamptz(6)
-  user_id                              String?   @db.Uuid
-  Status                               Status[]
-  Tarefa_Tarefa_criadorIdToUsuario     Tarefa[]  @relation("Tarefa_criadorIdToUsuario")
-  Tarefa_Tarefa_responsavelIdToUsuario Tarefa[]  @relation("Tarefa_responsavelIdToUsuario")
-  Tipo                                 Tipo[]
-  users                                users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+model usuario {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nome      String    @db.VarChar
+  funcao    String?   @default("COLABORADOR") @db.VarChar
+  createdat DateTime? @default(now()) @db.Timestamptz(6)
+  updatedat DateTime? @default(now()) @db.Timestamptz(6)
+  user_id   String?   @db.Uuid
+  users     users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@schema("public")
 }
@@ -444,11 +444,4 @@ enum one_time_token_type {
   phone_change_token
 
   @@schema("auth")
-}
-
-enum USER_ROLE {
-  ADMINISTRADOR
-  COLABORADOR
-
-  @@schema("public")
 }
