@@ -21,7 +21,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select'
-import { priorities, usuarios, associacoes, tipos } from '../data/data'
+import { priorities, usuarios, associacoes, tipos } from './data'
 
 export function AddTaskDialog() {
   const [open, setOpen] = useState(false)
