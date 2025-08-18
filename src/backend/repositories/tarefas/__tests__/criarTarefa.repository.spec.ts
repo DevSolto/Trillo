@@ -1,25 +1,28 @@
 import { describe, it, expect, vi } from 'vitest'
 import { criarTarefa } from '../criarTarefa.repository'
 import { prisma } from '@backend/prisma/client'
+import { AppError } from '@backend/shared/errors/app-error'
 
 vi.mock('@backend/prisma/client', () => {
-  return { prisma: { tarefa: { create: vi.fn().mockResolvedValue({ id: '1' }) } } }
+  return { prisma: { tarefa: { create: vi.fn() } } }
 })
 
 describe('criarTarefa.repository', () => {
+  const data: any = {
+    titulo: 't',
+    descricao: 'd',
+    prioridade: 'p',
+    associacaoId: 'a',
+    criadorId: 'c',
+    responsavelId: 'r',
+    statusId: null,
+    tipoId: 't',
+    data_inicio: new Date('2024-01-01'),
+    data_fim: new Date('2024-01-02'),
+  }
+
   it('insere tarefa com prisma', async () => {
-    const data: any = {
-      titulo: 't',
-      descricao: 'd',
-      prioridade: 'p',
-      associacaoId: 'a',
-      criadorId: 'c',
-      responsavelId: 'r',
-      statusId: null,
-      tipoId: 't',
-      data_inicio: new Date('2024-01-01'),
-      data_fim: new Date('2024-01-02'),
-    }
+    vi.mocked(prisma.tarefa.create).mockResolvedValue({ id: '1' } as any)
     const result = await criarTarefa(data)
     expect(prisma.tarefa.create).toHaveBeenCalledWith({
       data: {
@@ -35,5 +38,11 @@ describe('criarTarefa.repository', () => {
       },
     })
     expect(result).toEqual({ id: '1' })
+  })
+
+  it('lança AppError quando responsavel não existe', async () => {
+    const prismaError = { code: 'P2003', meta: { field_name: 'tarefa_responsavelid_fkey' } }
+    vi.mocked(prisma.tarefa.create).mockRejectedValue(prismaError as any)
+    await expect(criarTarefa(data)).rejects.toBeInstanceOf(AppError)
   })
 })
