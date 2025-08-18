@@ -1,0 +1,27 @@
+import { describe, it, expect, vi } from 'vitest'
+
+vi.mock('@backend/prisma/client', () => ({
+  prisma: {
+    usuario: {
+      findMany: vi.fn().mockResolvedValue([]),
+      count: vi.fn().mockResolvedValue(0)
+    }
+  }
+}))
+
+import { prisma } from '@backend/prisma/client'
+import { buscarColaboradores } from '../buscarColaboradores.repository'
+
+describe('buscarColaboradores.repository', () => {
+  it('chama prisma com filtros e paginacao', async () => {
+    await buscarColaboradores({ page: 2, perPage: 5, nome: 'test' } as any)
+    expect(prisma.usuario.findMany).toHaveBeenCalledWith({
+      where: { funcao: 'COLABORADOR', nome: { contains: 'test', mode: 'insensitive' } },
+      skip: 5,
+      take: 5
+    })
+    expect(prisma.usuario.count).toHaveBeenCalledWith({
+      where: { funcao: 'COLABORADOR', nome: { contains: 'test', mode: 'insensitive' } }
+    })
+  })
+})
