@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -23,7 +23,7 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select'
-import { priorities, usuarios, associacoes, tipos } from './data'
+import { priorities } from './data'
 import {
   Form,
   FormField,
@@ -45,6 +45,9 @@ const formSchema = z.object({
 
 export function AddTaskDialog() {
   const [open, setOpen] = useState(false)
+  const [usuarios, setUsuarios] = useState<{ value: string; label: string }[]>([])
+  const [associacoes, setAssociacoes] = useState<{ value: string; label: string }[]>([])
+  const [tipos, setTipos] = useState<{ value: string; label: string }[]>([])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,13 +55,37 @@ export function AddTaskDialog() {
       title: '',
       description: '',
       priority: priorities[1].value,
-      responsavel: usuarios[0].value,
-      associacao: associacoes[0].value,
-      tipo: tipos[0].value,
+      responsavel: '',
+      associacao: '',
+      tipo: '',
       dataFim: undefined,
     },
     mode: 'onChange',
   })
+
+  useEffect(() => {
+    async function fetchOptions() {
+      const [usuariosRes, associacoesRes, tiposRes] = await Promise.all([
+        fetch('/api/colaboradores/buscar?page=1&perPage=100').then((r) => r.json()),
+        fetch('/api/associacoes/buscar?page=1&perPage=100').then((r) => r.json()),
+        fetch('/api/tipos/buscar?page=1&perPage=100').then((r) => r.json()),
+      ])
+
+      const usuariosOptions = usuariosRes.colaboradores.map((u: any) => ({ value: u.id, label: u.nome }))
+      const associacoesOptions = associacoesRes.associacoes.map((a: any) => ({ value: a.id, label: a.nome }))
+      const tiposOptions = tiposRes.tipos.map((t: any) => ({ value: t.id, label: t.nome }))
+
+      setUsuarios(usuariosOptions)
+      setAssociacoes(associacoesOptions)
+      setTipos(tiposOptions)
+
+      if (usuariosOptions[0]) form.setValue('responsavel', usuariosOptions[0].value)
+      if (associacoesOptions[0]) form.setValue('associacao', associacoesOptions[0].value)
+      if (tiposOptions[0]) form.setValue('tipo', tiposOptions[0].value)
+    }
+
+    fetchOptions()
+  }, [form])
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     await fetch('/api/tarefas/criar', {
