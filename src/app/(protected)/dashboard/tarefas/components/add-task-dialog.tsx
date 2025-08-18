@@ -25,6 +25,7 @@ import {
   SelectItem,
 } from '@/components/ui/select'
 import { priorities } from './data'
+import { createClient } from '@/lib/client'
 import {
   Form,
   FormField,
@@ -97,6 +98,15 @@ export function AddTaskDialog() {
     setIsLoading(true)
     setError(null)
     try {
+      const supabase = createClient()
+      const {
+        data: { user }
+      } = await supabase.auth.getUser()
+
+      if (!user) {
+        throw new Error('Usuário não autenticado')
+      }
+
       const res = await fetch('/api/tarefas/criar', {
         method: 'POST',
         headers: {
@@ -110,7 +120,9 @@ export function AddTaskDialog() {
           associacaoId: data.associacao,
           tipoId: data.tipo,
           data_fim: data.dataFim,
-          statusId: 'todo'
+          statusId: null,
+          criadorId: user.id,
+          data_inicio: new Date()
         })
       })
       if (!res.ok) {

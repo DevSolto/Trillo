@@ -6,7 +6,7 @@ export interface Tarefa {
   associacaoId: string
   criadorId: string
   responsavelId: string
-  statusId: string
+  statusId: string | null
   tipoId: string
   data_inicio: Date
   data_fim: Date

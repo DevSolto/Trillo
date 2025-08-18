@@ -7,7 +7,7 @@ export const tarefaSchema = z.object({
   associacaoId: z.string().uuid(),
   criadorId: z.string().uuid(),
   responsavelId: z.string().uuid(),
-  statusId: z.string().uuid(),
+  statusId: z.string().uuid().nullish(),
   tipoId: z.string().uuid(),
   data_inicio: z.coerce.date(),
   data_fim: z.coerce.date()
