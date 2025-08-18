@@ -16,12 +16,13 @@ describe('buscarColaboradores.repository', () => {
   it('chama prisma com filtros e paginacao', async () => {
     await buscarColaboradores({ page: 2, perPage: 5, nome: 'test' } as any)
     expect(prisma.usuario.findMany).toHaveBeenCalledWith({
-      where: { funcao: 'COLABORADOR', nome: { contains: 'test', mode: 'insensitive' } },
+      where: { funcao: { in: ['COLABORADOR', 'ADM'] }, nome: { contains: 'test', mode: 'insensitive' } },
+      select: { id: true, nome: true, funcao: true },
       skip: 5,
       take: 5
     })
     expect(prisma.usuario.count).toHaveBeenCalledWith({
-      where: { funcao: 'COLABORADOR', nome: { contains: 'test', mode: 'insensitive' } }
+      where: { funcao: { in: ['COLABORADOR', 'ADM'] }, nome: { contains: 'test', mode: 'insensitive' } }
     })
   })
 })
