@@ -73,7 +73,7 @@ export function AddTaskDialog() {
 
       const usuariosOptions = usuariosRes.colaboradores.map((u: any) => ({
         value: u.id,
-        label: `${u.nome} (${u.funcao})`,
+        label: `${u.nome} - ${u.funcao.toLowerCase()}`,
       }))
       const associacoesOptions = associacoesRes.associacoes.map((a: any) => ({ value: a.id, label: a.nome }))
       const tiposOptions = tiposRes.tipos.map((t: any) => ({ value: t.id, label: t.nome }))
@@ -149,6 +149,30 @@ export function AddTaskDialog() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="responsavel"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Responsável</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className='w-full'>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {usuarios.map((u) => (
+                        <SelectItem key={u.value} value={u.value}>
+                          {u.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className='flex w-full justify-between gap-4'>
               <FormField
                 control={form.control}
@@ -166,30 +190,6 @@ export function AddTaskDialog() {
                         {priorities.map((p) => (
                           <SelectItem key={p.value} value={p.value}>
                             {p.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="responsavel"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Responsável</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {usuarios.map((u) => (
-                          <SelectItem key={u.value} value={u.value}>
-                            {u.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
