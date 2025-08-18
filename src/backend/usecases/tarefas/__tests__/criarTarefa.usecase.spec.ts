@@ -18,7 +18,7 @@ describe('criarTarefaUsecase', () => {
       associacaoId: '00000000-0000-0000-0000-000000000000',
       criadorId: '00000000-0000-0000-0000-000000000000',
       responsavelId: '00000000-0000-0000-0000-000000000000',
-      statusId: '00000000-0000-0000-0000-000000000000',
+      statusId: null,
       tipoId: '00000000-0000-0000-0000-000000000000',
       data_inicio: new Date(),
       data_fim: new Date()
