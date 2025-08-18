@@ -71,7 +71,10 @@ export function AddTaskDialog() {
         fetch('/api/tipos/buscar?page=1&perPage=100').then((r) => r.json()),
       ])
 
-      const usuariosOptions = usuariosRes.colaboradores.map((u: any) => ({ value: u.id, label: u.nome }))
+      const usuariosOptions = usuariosRes.colaboradores.map((u: any) => ({
+        value: u.id,
+        label: `${u.nome} (${u.funcao})`,
+      }))
       const associacoesOptions = associacoesRes.associacoes.map((a: any) => ({ value: a.id, label: a.nome }))
       const tiposOptions = tiposRes.tipos.map((t: any) => ({ value: t.id, label: t.nome }))
 
