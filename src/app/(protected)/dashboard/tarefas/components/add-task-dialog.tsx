@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { Loader2 } from 'lucide-react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -48,6 +49,8 @@ export function AddTaskDialog() {
   const [usuarios, setUsuarios] = useState<{ value: string; label: string }[]>([])
   const [associacoes, setAssociacoes] = useState<{ value: string; label: string }[]>([])
   const [tipos, setTipos] = useState<{ value: string; label: string }[]>([])
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -91,24 +94,36 @@ export function AddTaskDialog() {
   }, [form])
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    await fetch('/api/tarefas/criar', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        titulo: data.title,
-        descricao: data.description,
-        prioridade: data.priority,
-        responsavelId: data.responsavel,
-        associacaoId: data.associacao,
-        tipoId: data.tipo,
-        data_fim: data.dataFim,
-        statusId: 'todo'
+    setIsLoading(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/tarefas/criar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          titulo: data.title,
+          descricao: data.description,
+          prioridade: data.priority,
+          responsavelId: data.responsavel,
+          associacaoId: data.associacao,
+          tipoId: data.tipo,
+          data_fim: data.dataFim,
+          statusId: 'todo'
+        })
       })
-    })
-    setOpen(false)
-    form.reset()
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}))
+        throw new Error(errData.message || 'Erro ao criar tarefa')
+      }
+      setOpen(false)
+      form.reset()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Erro ao criar tarefa')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -220,58 +235,60 @@ export function AddTaskDialog() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="tipo"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tipo</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+              <FormField
+                control={form.control}
+                name="tipo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tipo</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {tipos.map((t) => (
+                          <SelectItem key={t.value} value={t.value}>
+                            {t.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="dataFim"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Data de término</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
+                      <DatePicker date={field.value} onChange={field.onChange} />
                     </FormControl>
-                    <SelectContent>
-                      {tipos.map((t) => (
-                        <SelectItem key={t.value} value={t.value}>
-                          {t.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="dataFim"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Data de término</FormLabel>
-                  <FormControl>
-                    <DatePicker date={field.value} onChange={field.onChange} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <DialogFooter>
-              <Button
-                variant="outline"
-                type="button"
-                onClick={() => {
-                  setOpen(false)
-                  form.reset()
-                }}
-              >
-                Cancelar
-              </Button>
-              <Button type="submit" disabled={!form.formState.isValid}>
-                Salvar
-              </Button>
-            </DialogFooter>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {error && <p className="text-sm text-red-500">{error}</p>}
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={() => {
+                    setOpen(false)
+                    form.reset()
+                  }}
+                >
+                  Cancelar
+                </Button>
+                <Button type="submit" disabled={!form.formState.isValid || isLoading}>
+                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isLoading ? 'Salvando...' : 'Salvar'}
+                </Button>
+              </DialogFooter>
           </form>
         </Form>
       </DialogContent>
