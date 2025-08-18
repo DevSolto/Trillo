@@ -173,7 +173,7 @@ export function AddTaskDialog() {
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className='w-full'>
-                        <SelectValue />
+                        <SelectValue placeholder='Escolha o responsável por essa tarefa' />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -188,39 +188,41 @@ export function AddTaskDialog() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="associacao"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Associação</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {associacoes.map((a) => (
-                        <SelectItem key={a.value} value={a.value}>
-                          {a.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className='flex gap-4 justify-between'>
+
+              <FormField
+                control={form.control}
+                name="associacao"
+                render={({ field }) => (
+                  <FormItem className='w-full'>
+                    <FormLabel>Associação</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className='w-full'>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {associacoes.map((a) => (
+                          <SelectItem key={a.value} value={a.value}>
+                            {a.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="tipo"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className='w-full'>
                     <FormLabel>Tipo</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className='w-full'>
                           <SelectValue />
                         </SelectTrigger>
                       </FormControl>
@@ -236,36 +238,37 @@ export function AddTaskDialog() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="dataFim"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Data de término</FormLabel>
-                    <FormControl>
-                      <DatePicker date={field.value} onChange={field.onChange} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={() => {
-                    setOpen(false)
-                    form.reset()
-                  }}
-                >
-                  Cancelar
-                </Button>
-                <Button type="submit" disabled={!form.formState.isValid || isLoading}>
-                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {isLoading ? 'Salvando...' : 'Salvar'}
-                </Button>
-              </DialogFooter>
+            </div>
+            <FormField
+              control={form.control}
+              name="dataFim"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Data de término</FormLabel>
+                  <FormControl>
+                    <DatePicker date={field.value} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {error && <p className="text-sm text-red-500">{error}</p>}
+            <DialogFooter>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => {
+                  setOpen(false)
+                  form.reset()
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={!form.formState.isValid || isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isLoading ? 'Salvando...' : 'Salvar'}
+              </Button>
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>
