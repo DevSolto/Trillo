@@ -9,10 +9,12 @@ import { labels, priorities, statuses } from "./data"
 
 export type Task = {
   id: string
+  createdAt: string
   title: string
   status: string | null
   label: string | null
   priority: string | null
+  endDate: string | null
 }
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
@@ -40,11 +42,12 @@ export const columns: ColumnDef<Task>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "id",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Tarefa" />,
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
-    enableSorting: false,
-    enableHiding: false,
+    accessorKey: "createdAt",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Data de Criação" />,
+    cell: ({ row }) => {
+      const date = row.getValue("createdAt") as string
+      return <div className="w-[120px]">{new Date(date).toLocaleDateString("pt-BR")}</div>
+    },
   },
   {
     accessorKey: "title",
@@ -91,6 +94,18 @@ export const columns: ColumnDef<Task>[] = [
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
+    },
+  },
+  {
+    accessorKey: "endDate",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Data Final" />,
+    cell: ({ row }) => {
+      const value = row.getValue("endDate") as string | null
+      return (
+        <div className="w-[120px]">
+          {value ? new Date(value).toLocaleDateString("pt-BR") : "-"}
+        </div>
+      )
     },
   },
   {

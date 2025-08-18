@@ -17,10 +17,12 @@ export default async function TarefasPage() {
 
   const tasks: Task[] = (tarefas ?? []).map((t: any) => ({
     id: t.id,
+    createdAt: t.createdat,
     title: t.titulo,
     status: t.statusid ?? null,
     label: t.tipoid ?? null,
     priority: t.prioridade ?? null,
+    endDate: t.data_fim ?? null,
   }))
 
   return (
