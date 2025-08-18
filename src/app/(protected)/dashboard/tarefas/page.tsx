@@ -3,8 +3,17 @@ import { DataTable } from "./components/data-table"
 
 export default async function TarefasPage() {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
-  const res = await fetch(`${baseUrl}/api/tarefas/buscar`, { cache: "no-store" })
-  const { tarefas } = await res.json()
+
+  let tarefas: any[] = []
+  try {
+    const res = await fetch(`${baseUrl}/api/tarefas/buscar`, { cache: "no-store" })
+    if (res.ok) {
+      const data = await res.json()
+      tarefas = data?.tarefas ?? []
+    }
+  } catch (error) {
+    console.error("Erro ao buscar tarefas", error)
+  }
 
   const tasks: Task[] = (tarefas ?? []).map((t: any) => ({
     id: t.id,
