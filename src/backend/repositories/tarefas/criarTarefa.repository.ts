@@ -20,7 +20,10 @@ export async function criarTarefa(data: TarefaInput) {
       },
     })
   } catch (error: any) {
-    if (error?.code === 'P2003' && error?.meta?.field_name?.includes('responsavelid')) {
+    if (
+      error?.code === 'P2003' &&
+      (error?.meta?.field_name || error?.meta?.target)?.toLowerCase?.().includes('responsavelid')
+    ) {
       throw new AppError('Responsável não encontrado')
     }
 
