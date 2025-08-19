@@ -19,13 +19,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { labels } from "./data"
+import { EditTaskDialog } from "./edit-task-dialog"
+import { Task } from "./columns"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
 }
 
 export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TData>) {
-  const task = row.original as any
+  const task = row.original as Task
 
   return (
     <DropdownMenu>
@@ -36,7 +38,9 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Editar</DropdownMenuItem>
+        <EditTaskDialog task={task}>
+          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>Editar</DropdownMenuItem>
+        </EditTaskDialog>
         <DropdownMenuItem>Duplicar</DropdownMenuItem>
         <DropdownMenuItem>Favoritar</DropdownMenuItem>
         <DropdownMenuSeparator />
