@@ -2,21 +2,19 @@
 import { TarefaInput } from '@backend/shared/validators/tarefa'
 import { prisma } from '@backend/prisma/client'
 import { AppError } from '@backend/shared/errors/app-error'
+import { da } from 'date-fns/locale';
 
 export async function criarTarefa(data: TarefaInput) {
+  console.log('Criando tarefa com os dados:', data);
   try {
-    const [criador, responsavel] = await Promise.all([
-      prisma.usuario.findFirst({ where: { OR: [{ id: data.criadorId }, { user_id: data.criadorId }] } }), prisma.usuario.findFirst({
-        where: { OR: [{ id: data.responsavelId }, { user_id: data.responsavelId }] }
+    const criador = await prisma.usuario.findFirst({
+        where: {
+          user_id: data.criadorId
+        }
       })
-    ])
 
     if (!criador) {
       throw new AppError('Criador não encontrado')
-    }
-
-    if (!responsavel) {
-      throw new AppError('Responsável não encontrado')
     }
 
     return await prisma.tarefa.create({
@@ -26,8 +24,7 @@ export async function criarTarefa(data: TarefaInput) {
         prioridade: data.prioridade,
         associacaoid: data.associacaoId,
         criadorid: criador.id,
-        responsavelid: responsavel.id,
-        ...(data.statusId ? { statusid: data.statusId } : {}),
+        responsavelid: data.responsavelId,
         tipoid: data.tipoId,
         data_inicio: data.data_inicio,
         data_fim: data.data_fim,
