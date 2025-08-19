@@ -38,11 +38,16 @@ export async function criarTarefa(data: TarefaInput) {
     if (error instanceof AppError) {
       throw error
     }
-    if (
-      error?.code === 'P2003' &&
-      (error?.meta?.field_name || error?.meta?.target)?.toLowerCase?.().includes('responsavelid')
-    ) {
-      throw new AppError('Responsável não encontrado')
+    const fieldName = (error?.meta?.field_name || error?.meta?.target || '').toLowerCase()
+
+    if (error?.code === 'P2003') {
+      if (fieldName.includes('responsavelid')) {
+        throw new AppError('Responsável não encontrado')
+      }
+
+      if (fieldName.includes('criadorid')) {
+        throw new AppError('Criador não encontrado')
+      }
     }
 
     throw error
