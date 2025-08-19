@@ -45,4 +45,10 @@ describe('criarTarefa.repository', () => {
     vi.mocked(prisma.tarefa.create).mockRejectedValue(prismaError as any)
     await expect(criarTarefa(data)).rejects.toBeInstanceOf(AppError)
   })
+
+  it('lança AppError quando responsavel não existe (meta.target)', async () => {
+    const prismaError = { code: 'P2003', meta: { target: 'tarefa_responsavelid_fkey' } }
+    vi.mocked(prisma.tarefa.create).mockRejectedValue(prismaError as any)
+    await expect(criarTarefa(data)).rejects.toBeInstanceOf(AppError)
+  })
 })
