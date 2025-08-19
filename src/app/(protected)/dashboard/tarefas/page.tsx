@@ -19,10 +19,14 @@ export default async function TarefasPage() {
     id: t.id,
     createdAt: t.createdat,
     title: t.titulo,
+    description: t.descricao,
     status: t.statusid ?? null,
     label: t.tipoid ?? null,
     priority: t.prioridade ?? null,
     endDate: t.data_fim ?? null,
+    responsavelId: t.responsavelid ?? null,
+    associacaoId: t.associacaoid ?? null,
+    tipoId: t.tipoid ?? null,
   }))
 
   return (

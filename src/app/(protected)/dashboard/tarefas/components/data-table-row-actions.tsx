@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { labels } from "./data"
+import { EditTaskDialog } from "./edit-task-dialog"
+import { Task } from "./columns"
 import { useRouter } from "next/navigation"
 
 interface DataTableRowActionsProps<TData> {
@@ -60,7 +62,9 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Editar</DropdownMenuItem>
+        <EditTaskDialog task={task}>
+          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>Editar</DropdownMenuItem>
+        </EditTaskDialog>
         <DropdownMenuItem>Duplicar</DropdownMenuItem>
         <DropdownMenuItem>Favoritar</DropdownMenuItem>
         <DropdownMenuSeparator />

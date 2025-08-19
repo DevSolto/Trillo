@@ -11,10 +11,14 @@ export type Task = {
   id: string
   createdAt: string
   title: string
+  description: string
   status: string | null
   label: string | null
   priority: string | null
   endDate: string | null
+  responsavelId: string | null
+  associacaoId: string | null
+  tipoId: string | null
 }
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
