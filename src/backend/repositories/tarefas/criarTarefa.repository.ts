@@ -4,7 +4,6 @@ import { prisma } from '@backend/prisma/client'
 import { AppError } from '@backend/shared/errors/app-error'
 
 export async function criarTarefa(data: TarefaInput) {
-  console.log('Criando tarefa com os dados:', data);
   try {
     const [criador, responsavel] = await Promise.all([
       prisma.usuario.findFirst({
@@ -42,6 +41,7 @@ export async function criarTarefa(data: TarefaInput) {
     })
   } catch (error: any) {
     if (error instanceof AppError) {
+      console.error('Erro de aplicação:', error.message)
       throw error
     }
     const fieldName = (error?.meta?.field_name || error?.meta?.target || '').toLowerCase()
