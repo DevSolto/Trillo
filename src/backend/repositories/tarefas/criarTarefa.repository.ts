@@ -5,26 +5,17 @@ import { AppError } from '@backend/shared/errors/app-error'
 
 export async function criarTarefa(data: TarefaInput) {
   try {
-    const [criador, responsavel] = await Promise.all([
-      prisma.usuario.findFirst({
-        where: {
-          user_id: data.criadorId,
-        },
-      }),
-      prisma.usuario.findUnique({
-        where: {
-          id: data.responsavelId,
-        },
-      }),
-    ])
-
-    if (!criador) {
-      throw new AppError('Criador não encontrado')
-    }
+    const responsavel = await prisma.usuario.findUnique({
+      where: {
+        id: data.responsavelId,
+      },
+    })
 
     if (!responsavel) {
       throw new AppError('Responsável não encontrado')
     }
+    console.log('Criando tarefa com os dados:', data)
+    console.log('Responsável encontrado:', responsavel)
 
     return await prisma.tarefa.create({
       data: {
@@ -32,9 +23,10 @@ export async function criarTarefa(data: TarefaInput) {
         descricao: data.descricao,
         prioridade: data.prioridade,
         associacaoid: data.associacaoId,
-        criadorid: criador.id,
-        responsavelid: responsavel.id,
+        criadorid: data.criadorId,
+        responsavelid: responsavel.user_id,
         tipoid: data.tipoId,
+        statusid: '8eb90bc1-244c-4412-bc9f-3c12097a8d83', // ID do status "Em andamento"
         data_inicio: data.data_inicio,
         data_fim: data.data_fim,
       },
