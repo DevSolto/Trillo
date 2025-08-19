@@ -21,13 +21,37 @@ import {
 import { labels } from "./data"
 import { EditTaskDialog } from "./edit-task-dialog"
 import { Task } from "./columns"
+import { useRouter } from "next/navigation"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
 }
 
 export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TData>) {
-  const task = row.original as Task
+  const task = row.original as any
+  const router = useRouter()
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm("Deseja realmente excluir esta tarefa?")
+    if (!confirmed) return
+
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || ""
+      const res = await fetch(`${baseUrl}/api/tarefas/deletar`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: task.id }),
+      })
+
+      if (res.ok) {
+        router.refresh()
+      } else {
+        console.error("Falha ao excluir tarefa")
+      }
+    } catch (error) {
+      console.error("Erro ao excluir tarefa", error)
+    }
+  }
 
   return (
     <DropdownMenu>
@@ -57,7 +81,7 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive">
+        <DropdownMenuItem variant="destructive" onClick={handleDelete}>
           Excluir
           <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
         </DropdownMenuItem>
