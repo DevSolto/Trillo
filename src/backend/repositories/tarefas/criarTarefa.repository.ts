@@ -23,6 +23,7 @@ export async function criarTarefa(data: TarefaInput) {
     if (error?.code === 'P2003' && error?.meta?.field_name?.includes('responsavelid')) {
       throw new AppError('Responsável não encontrado')
     }
+
     throw error
   }
 }
