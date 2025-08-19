@@ -6,7 +6,7 @@ import { AppError } from '@backend/shared/errors/app-error'
 export async function criarTarefa(data: TarefaInput) {
   try {
     const [criador, responsavel] = await Promise.all([
-      prisma.usuario.findUnique({ where: { user_id: data.criadorId } }),
+      prisma.usuario.findUnique({ where: { id: data.criadorId } }),
       prisma.usuario.findFirst({
         where: { OR: [{ id: data.responsavelId }, { user_id: data.responsavelId }] }
       })
