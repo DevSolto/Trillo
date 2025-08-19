@@ -14,6 +14,13 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export function DataTableViewOptions<TData>({ table }: { table: Table<TData> }) {
+  const columnNameMap: Record<string, string> = {
+    createdAt: "Data de Criação",
+    title: "Título",
+    status: "Status",
+    priority: "Prioridade",
+    endDate: "Data Final",
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,14 +36,14 @@ export function DataTableViewOptions<TData>({ table }: { table: Table<TData> }) 
           .getAllColumns()
           .filter((column) => typeof column.accessorFn !== "undefined" && column.getCanHide())
           .map((column) => {
+            const label = columnNameMap[column.id as keyof typeof columnNameMap] || column.id
             return (
               <DropdownMenuCheckboxItem
                 key={column.id}
-                className="capitalize"
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.id}
+                {label}
               </DropdownMenuCheckboxItem>
             )
           })}
