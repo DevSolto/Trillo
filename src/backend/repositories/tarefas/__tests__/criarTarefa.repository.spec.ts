@@ -37,7 +37,8 @@ describe('criarTarefa.repository', () => {
         prioridade: data.prioridade,
         associacaoid: data.associacaoId,
         criadorid: data.criadorId,
-        responsavelid: data.responsavelId,
+        // o id salvo deve ser o retornado do banco
+        responsavelid: 'responsavel',
         tipoid: data.tipoId,
         statusid: '8eb90bc1-244c-4412-bc9f-3c12097a8d83',
         data_inicio: data.data_inicio,
