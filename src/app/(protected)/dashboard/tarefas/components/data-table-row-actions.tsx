@@ -22,6 +22,17 @@ import { labels } from "./data"
 import { EditTaskDialog } from "./edit-task-dialog"
 import { Task } from "./columns"
 import { useRouter } from "next/navigation"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -32,9 +43,6 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
   const router = useRouter()
 
   const handleDelete = async () => {
-    const confirmed = window.confirm("Deseja realmente excluir esta tarefa?")
-    if (!confirmed) return
-
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || ""
       const res = await fetch(`${baseUrl}/api/tarefas/deletar`, {
@@ -81,10 +89,26 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onClick={handleDelete}>
-          Excluir
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-        </DropdownMenuItem>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <DropdownMenuItem variant="destructive" onSelect={(e) => e.preventDefault()}>
+              Excluir
+              <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Excluir tarefa</AlertDialogTitle>
+              <AlertDialogDescription>
+                Esta ação não pode ser desfeita. Tem certeza que deseja excluir esta tarefa?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDelete}>Excluir</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </DropdownMenuContent>
     </DropdownMenu>
   )

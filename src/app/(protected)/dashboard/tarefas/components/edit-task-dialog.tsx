@@ -36,6 +36,17 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Task } from './columns'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter as AlertDialogFooterRoot,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Título é obrigatório' }),
@@ -309,10 +320,28 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={!form.formState.isValid || isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {isLoading ? 'Salvando...' : 'Salvar'}
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button type="button" disabled={!form.formState.isValid || isLoading}>
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {isLoading ? 'Salvando...' : 'Salvar'}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Confirmar edição</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Deseja realmente salvar as alterações desta tarefa?
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooterRoot>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction onClick={form.handleSubmit(onSubmit)} disabled={isLoading}>
+                      Confirmar
+                    </AlertDialogAction>
+                  </AlertDialogFooterRoot>
+                </AlertDialogContent>
+              </AlertDialog>
             </DialogFooter>
           </form>
         </Form>
