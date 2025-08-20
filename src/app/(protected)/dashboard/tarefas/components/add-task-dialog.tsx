@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/select'
 import { priorities } from './data'
 import { createClient } from '@/lib/client'
+import { useNotification } from '@/components/notification-provider'
 import {
   Form,
   FormField,
@@ -54,6 +55,7 @@ export function AddTaskDialog() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const notify = useNotification()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -131,6 +133,7 @@ export function AddTaskDialog() {
         const errData = await res.json().catch(() => ({}))
         throw new Error(errData.message || 'Erro ao criar tarefa')
       }
+      notify({ type: 'success', title: 'Tarefa', message: 'Tarefa criada com sucesso.' })
       setOpen(false)
       form.reset()
       router.refresh()
