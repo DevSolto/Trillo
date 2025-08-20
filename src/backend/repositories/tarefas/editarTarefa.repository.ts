@@ -12,7 +12,7 @@ export async function editarTarefa(data: EditarTarefaInput) {
       if (!responsavel) {
         throw new AppError('Responsável não encontrado')
       }
-      responsavelid = responsavel.user_id
+      responsavelid = data.responsavelId
     }
 
     return await prisma.tarefa.update({

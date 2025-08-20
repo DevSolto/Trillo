@@ -27,7 +27,7 @@ describe('criarTarefa.repository', () => {
   }
 
   it('insere tarefa com prisma', async () => {
-    vi.mocked(prisma.usuario.findUnique).mockResolvedValue({ user_id: 'responsavel' } as any)
+    vi.mocked(prisma.usuario.findUnique).mockResolvedValue({ id: 'responsavel' } as any)
     vi.mocked(prisma.tarefa.create).mockResolvedValue({ id: '1' } as any)
     const result = await criarTarefa(data)
     expect(prisma.tarefa.create).toHaveBeenCalledWith({
@@ -37,7 +37,7 @@ describe('criarTarefa.repository', () => {
         prioridade: data.prioridade,
         associacaoid: data.associacaoId,
         criadorid: data.criadorId,
-        responsavelid: 'responsavel',
+        responsavelid: data.responsavelId,
         tipoid: data.tipoId,
         statusid: '8eb90bc1-244c-4412-bc9f-3c12097a8d83',
         data_inicio: data.data_inicio,
@@ -53,14 +53,14 @@ describe('criarTarefa.repository', () => {
   })
 
   it('lança AppError quando prisma retorna P2003 de responsavelid', async () => {
-    vi.mocked(prisma.usuario.findUnique).mockResolvedValue({ user_id: 'responsavel' } as any)
+    vi.mocked(prisma.usuario.findUnique).mockResolvedValue({ id: 'responsavel' } as any)
     const prismaError = { code: 'P2003', meta: { field_name: 'tarefa_responsavelid_fkey' } }
     vi.mocked(prisma.tarefa.create).mockRejectedValue(prismaError as any)
     await expect(criarTarefa(data)).rejects.toBeInstanceOf(AppError)
   })
 
   it('lança AppError quando prisma retorna P2003 de criadorid', async () => {
-    vi.mocked(prisma.usuario.findUnique).mockResolvedValue({ user_id: 'responsavel' } as any)
+    vi.mocked(prisma.usuario.findUnique).mockResolvedValue({ id: 'responsavel' } as any)
     const prismaError = { code: 'P2003', meta: { field_name: 'tarefa_criadorid_fkey' } }
     vi.mocked(prisma.tarefa.create).mockRejectedValue(prismaError as any)
     await expect(criarTarefa(data)).rejects.toBeInstanceOf(AppError)
