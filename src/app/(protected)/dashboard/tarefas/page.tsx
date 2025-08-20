@@ -5,15 +5,29 @@ export default async function TarefasPage() {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
 
   let tarefas: any[] = []
+  let associacoes: any[] = []
   try {
-    const res = await fetch(`${baseUrl}/api/tarefas/buscar`, { cache: "no-store" })
-    if (res.ok) {
-      const data = await res.json()
+    const [tarefasRes, associacoesRes] = await Promise.all([
+      fetch(`${baseUrl}/api/tarefas/buscar`, { cache: "no-store" }),
+      fetch(`${baseUrl}/api/associacoes/buscar?page=1&perPage=100`, { cache: "no-store" }),
+    ])
+
+    if (tarefasRes.ok) {
+      const data = await tarefasRes.json()
       tarefas = data?.tarefas ?? []
+    }
+
+    if (associacoesRes.ok) {
+      const data = await associacoesRes.json()
+      associacoes = data?.associacoes ?? []
     }
   } catch (error) {
     console.error("Erro ao buscar tarefas", error)
   }
+
+  const associacoesMap = Object.fromEntries(
+    associacoes.map((a: any) => [a.id, a.nome])
+  )
 
   const tasks: Task[] = (tarefas ?? []).map((t: any) => ({
     id: t.id,
@@ -26,6 +40,7 @@ export default async function TarefasPage() {
     endDate: t.data_fim ?? null,
     responsavelId: t.responsavelid ?? null,
     associacaoId: t.associacaoid ?? null,
+    associacao: associacoesMap[t.associacaoid] ?? null,
     tipoId: t.tipoid ?? null,
   }))
 
