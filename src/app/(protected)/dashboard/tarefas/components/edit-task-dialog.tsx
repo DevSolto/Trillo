@@ -75,7 +75,19 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
     mode: 'onChange',
   })
 
+  const {
+    title: defaultTitle,
+    description: defaultDescription,
+    priority: defaultPriority,
+    responsavelId,
+    associacaoId,
+    tipoId,
+    endDate,
+  } = task
+
   useEffect(() => {
+    if (!open) return
+
     async function fetchOptions() {
       const [usuariosRes, associacoesRes, tiposRes] = await Promise.all([
         fetch('/api/colaboradores/buscar?page=1&perPage=100').then((r) => r.json()),
@@ -94,27 +106,27 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
       setAssociacoes(associacoesOptions)
       setTipos(tiposOptions)
 
-      form.setValue('responsavel', task.responsavelId ?? usuariosOptions[0]?.value ?? '')
-      form.setValue('associacao', task.associacaoId ?? associacoesOptions[0]?.value ?? '')
-      form.setValue('tipo', task.tipoId ?? tiposOptions[0]?.value ?? '')
+      form.setValue('responsavel', responsavelId ?? usuariosOptions[0]?.value ?? '')
+      form.setValue('associacao', associacaoId ?? associacoesOptions[0]?.value ?? '')
+      form.setValue('tipo', tipoId ?? tiposOptions[0]?.value ?? '')
     }
 
     fetchOptions()
-  }, [form, task])
+  }, [open, form, responsavelId, associacaoId, tipoId])
 
   useEffect(() => {
-    if (open) {
-      form.reset({
-        title: task.title,
-        description: task.description,
-        priority: task.priority ?? priorities[1].value,
-        responsavel: task.responsavelId ?? '',
-        associacao: task.associacaoId ?? '',
-        tipo: task.tipoId ?? '',
-        dataFim: task.endDate ? new Date(task.endDate) : undefined,
-      })
-    }
-  }, [open, task, form])
+    if (!open) return
+
+    form.reset({
+      title: defaultTitle,
+      description: defaultDescription,
+      priority: defaultPriority ?? priorities[1].value,
+      responsavel: responsavelId ?? '',
+      associacao: associacaoId ?? '',
+      tipo: tipoId ?? '',
+      dataFim: endDate ? new Date(endDate) : undefined,
+    })
+  }, [open, form, defaultTitle, defaultDescription, defaultPriority, responsavelId, associacaoId, tipoId, endDate])
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true)
