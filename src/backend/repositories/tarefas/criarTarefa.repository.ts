@@ -14,8 +14,6 @@ export async function criarTarefa(data: TarefaInput) {
     if (!responsavel) {
       throw new AppError('Responsável não encontrado')
     }
-    console.log('Criando tarefa com os dados:', data)
-    console.log('Responsável encontrado:', responsavel)
 
     return await prisma.tarefa.create({
       data: {
@@ -24,7 +22,7 @@ export async function criarTarefa(data: TarefaInput) {
         prioridade: data.prioridade,
         associacaoid: data.associacaoId,
         criadorid: data.criadorId,
-        responsavelid: responsavel.user_id,
+        responsavelid: data.responsavelId,
         tipoid: data.tipoId,
         statusid: '8eb90bc1-244c-4412-bc9f-3c12097a8d83', // ID do status "Em andamento"
         data_inicio: data.data_inicio,
