@@ -34,7 +34,7 @@ export default async function TarefasPage() {
     createdAt: t.createdat,
     title: t.titulo,
     description: t.descricao,
-    status: t.statusid ?? null,
+    status: t.status?.nome ?? null,
     label: t.tipoid ?? null,
     priority: t.prioridade ?? null,
     endDate: t.data_fim ?? null,
