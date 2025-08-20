@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, ReactNode } from 'react'
+import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
@@ -58,6 +59,7 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
   const [tipos, setTipos] = useState<{ value: string; label: string }[]>([])
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -149,6 +151,7 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
         throw new Error(errData.message || 'Erro ao editar tarefa')
       }
       setOpen(false)
+      router.refresh()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erro ao editar tarefa')
     } finally {
