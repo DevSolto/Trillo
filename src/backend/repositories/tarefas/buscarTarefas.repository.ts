@@ -14,7 +14,12 @@ export async function buscarTarefas({ page, perPage, titulo, statusId, prioridad
   }
 
   const [tarefas, total] = await Promise.all([
-    prisma.tarefa.findMany({ where, skip: (page - 1) * perPage, take: perPage }),
+    prisma.tarefa.findMany({
+      where,
+      skip: (page - 1) * perPage,
+      take: perPage,
+      include: { status: true }
+    }),
     prisma.tarefa.count({ where })
   ])
 

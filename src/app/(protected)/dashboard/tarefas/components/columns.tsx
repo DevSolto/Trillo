@@ -87,8 +87,9 @@ export const columns: ColumnDef<Task>[] = [
       <DataTableColumnHeader column={column} title="Status" className="w-fit" />
     ),
     cell: ({ row }) => {
-      const status = statuses.find((status) => status.value === row.getValue("status"))
-      if (!status) return null
+      const value = row.getValue("status") as string | null
+      const status = statuses.find((status) => status.value === value)
+      if (!status) return <span>{value ?? "-"}</span>
       return (
         <div className="flex items-center gap-2 w-fit">
           {status.icon && <status.icon className="text-muted-foreground size-4" />}

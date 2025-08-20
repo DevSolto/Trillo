@@ -18,7 +18,8 @@ describe('buscarTarefas.repository', () => {
     expect(prisma.tarefa.findMany).toHaveBeenCalledWith({
       where: { statusId: '1', prioridade: 'alta', titulo: { contains: 'test', mode: 'insensitive' } },
       skip: 5,
-      take: 5
+      take: 5,
+      include: { status: true }
     })
     expect(prisma.tarefa.count).toHaveBeenCalledWith({
       where: { statusId: '1', prioridade: 'alta', titulo: { contains: 'test', mode: 'insensitive' } }
