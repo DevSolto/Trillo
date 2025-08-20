@@ -18,6 +18,7 @@ export type Task = {
   endDate: string | null
   responsavelId: string | null
   associacaoId: string | null
+  associacao: string | null
   tipoId: string | null
 }
 import { DataTableColumnHeader } from "./data-table-column-header"
@@ -47,33 +48,49 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Data de Criação" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Data de Criação" className="w-fit" />
+    ),
     cell: ({ row }) => {
       const date = row.getValue("createdAt") as string
-      return <div className="w-[120px]">{new Date(date).toLocaleDateString("pt-BR")}</div>
+      return <div className="w-fit">{new Date(date).toLocaleDateString("pt-BR")}</div>
     },
   },
   {
     accessorKey: "title",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Título" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Título" className="w-full" />
+    ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label)
       return (
-        <div className="flex gap-2">
+        <div className="flex w-full gap-2">
           {label && <Badge variant="outline">{label.label}</Badge>}
-          <span className="max-w-[500px] truncate font-medium">{row.getValue("title")}</span>
+          <span className="truncate font-medium w-full">{row.getValue("title")}</span>
         </div>
       )
     },
   },
   {
+    accessorKey: "associacao",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Associação" className="w-full" />
+    ),
+    cell: ({ row }) => {
+      const value = row.getValue("associacao") as string | null
+      return <span className="w-full truncate">{value ?? "-"}</span>
+    },
+  },
+  {
     accessorKey: "status",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" className="w-fit" />
+    ),
     cell: ({ row }) => {
       const status = statuses.find((status) => status.value === row.getValue("status"))
       if (!status) return null
       return (
-        <div className="flex w-[100px] items-center gap-2">
+        <div className="flex items-center gap-2 w-fit">
           {status.icon && <status.icon className="text-muted-foreground size-4" />}
           <span>{status.label}</span>
         </div>
@@ -85,12 +102,14 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     accessorKey: "priority",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Prioridade" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Prioridade" className="w-fit" />
+    ),
     cell: ({ row }) => {
       const priority = priorities.find((priority) => priority.value === row.getValue("priority"))
       if (!priority) return null
       return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-fit">
           {priority.icon && <priority.icon className="text-muted-foreground size-4" />}
           <span>{priority.label}</span>
         </div>
@@ -102,11 +121,13 @@ export const columns: ColumnDef<Task>[] = [
   },
   {
     accessorKey: "endDate",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Data Final" />,
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Data Final" className="w-fit" />
+    ),
     cell: ({ row }) => {
       const value = row.getValue("endDate") as string | null
       return (
-        <div className="w-[120px]">
+        <div className="w-fit">
           {value ? new Date(value).toLocaleDateString("pt-BR") : "-"}
         </div>
       )
