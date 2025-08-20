@@ -33,6 +33,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { useNotification } from "@/components/notification-provider"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -41,6 +42,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TData>) {
   const task = row.original as any
   const router = useRouter()
+  const notify = useNotification()
 
   const handleDelete = async () => {
     try {
@@ -52,12 +54,13 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
       })
 
       if (res.ok) {
+        notify({ type: "success", title: "Tarefa", message: "Tarefa excluída com sucesso." })
         router.refresh()
       } else {
-        console.error("Falha ao excluir tarefa")
+        notify({ type: "error", title: "Tarefa", message: "Falha ao excluir tarefa" })
       }
     } catch (error) {
-      console.error("Erro ao excluir tarefa", error)
+      notify({ type: "error", title: "Tarefa", message: "Erro ao excluir tarefa" })
     }
   }
 
