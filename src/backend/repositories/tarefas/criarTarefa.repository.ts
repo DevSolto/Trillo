@@ -7,7 +7,7 @@ export async function criarTarefa(data: TarefaInput) {
   try {
     const responsavel = await prisma.usuario.findFirst({
       where: {
-          id: data.responsavelId,
+        id: data.responsavelId,
       },
     })
 
@@ -23,7 +23,7 @@ export async function criarTarefa(data: TarefaInput) {
         associacaoid: data.associacaoId,
         criadorid: data.criadorId,
         // utilize o id retornado do banco para evitar inconsistências de FK
-        responsavelid: responsavel.id,
+        responsavelid: responsavel.user_id,
         tipoid: data.tipoId,
         statusid: '8eb90bc1-244c-4412-bc9f-3c12097a8d83', // ID do status "Em andamento"
         data_inicio: data.data_inicio,

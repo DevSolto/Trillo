@@ -10,6 +10,8 @@ datasource db {
   schemas   = ["auth", "public"]
 }
 
+/* ====================== AUTH (inalterado) ====================== */
+
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model audit_log_entries {
@@ -23,8 +25,6 @@ model audit_log_entries {
   @@schema("auth")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model flow_state {
   id                     String                @id @db.Uuid
   user_id                String?               @db.Uuid
@@ -46,8 +46,6 @@ model flow_state {
   @@schema("auth")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model identities {
   provider_id     String
   user_id         String    @db.Uuid
@@ -66,8 +64,6 @@ model identities {
   @@schema("auth")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model instances {
   id              String    @id @db.Uuid
   uuid            String?   @db.Uuid
@@ -78,8 +74,6 @@ model instances {
   @@schema("auth")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model mfa_amr_claims {
   session_id            String   @db.Uuid
   created_at            DateTime @db.Timestamptz(6)
@@ -92,8 +86,6 @@ model mfa_amr_claims {
   @@schema("auth")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model mfa_challenges {
   id                     String      @id @db.Uuid
   factor_id              String      @db.Uuid
@@ -108,8 +100,6 @@ model mfa_challenges {
   @@schema("auth")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model mfa_factors {
   id                   String           @id @db.Uuid
   user_id              String           @db.Uuid
@@ -132,8 +122,6 @@ model mfa_factors {
   @@schema("auth")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model one_time_tokens {
   id         String              @id @db.Uuid
   user_id    String              @db.Uuid
@@ -150,8 +138,6 @@ model one_time_tokens {
   @@schema("auth")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model refresh_tokens {
   instance_id String?   @db.Uuid
   id          BigInt    @id @default(autoincrement())
@@ -172,9 +158,6 @@ model refresh_tokens {
   @@schema("auth")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model saml_providers {
   id                String        @id @db.Uuid
   sso_provider_id   String        @db.Uuid
@@ -184,16 +167,12 @@ model saml_providers {
   attribute_mapping Json?
   created_at        DateTime?     @db.Timestamptz(6)
   updated_at        DateTime?     @db.Timestamptz(6)
-  name_id_format    String?
   sso_providers     sso_providers @relation(fields: [sso_provider_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([sso_provider_id])
   @@schema("auth")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model saml_relay_states {
   id              String        @id @db.Uuid
   sso_provider_id String        @db.Uuid
@@ -212,16 +191,12 @@ model saml_relay_states {
   @@schema("auth")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model schema_migrations {
   version String @id @db.VarChar(255)
 
   @@schema("auth")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model sessions {
   id             String           @id @db.Uuid
   user_id        String           @db.Uuid
@@ -244,10 +219,6 @@ model sessions {
   @@schema("auth")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model sso_domains {
   id              String        @id @db.Uuid
   sso_provider_id String        @db.Uuid
@@ -260,10 +231,6 @@ model sso_domains {
   @@schema("auth")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model sso_providers {
   id                String              @id @db.Uuid
   resource_id       String?
@@ -276,10 +243,6 @@ model sso_providers {
   @@schema("auth")
 }
 
-/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model users {
   instance_id                 String?           @db.Uuid
   id                          String            @id @db.Uuid
@@ -320,14 +283,13 @@ model users {
   mfa_factors                 mfa_factors[]
   one_time_tokens             one_time_tokens[]
   sessions                    sessions[]
-  status                      status[]
-  tipo                        tipo[]
-  usuario                     usuario[]
 
   @@index([instance_id])
   @@index([is_anonymous])
   @@schema("auth")
 }
+
+/* ====================== PUBLIC ====================== */
 
 model associacao {
   id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -349,7 +311,10 @@ model status {
   criadorid String?   @db.Uuid
   createdat DateTime? @default(now()) @db.Timestamptz(6)
   updatedat DateTime? @default(now()) @db.Timestamptz(6)
-  users     users?    @relation(fields: [criadorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  // Agora referencia o perfil (public.usuario), não auth.users
+  criador   usuario?  @relation(fields: [criadorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
   tarefa    tarefa[]
 
   @@schema("public")
@@ -369,6 +334,7 @@ model tarefa {
   data_fim                              DateTime?   @db.Timestamptz(6)
   createdat                             DateTime?   @default(now()) @db.Timestamptz(6)
   updatedat                             DateTime?   @default(now()) @db.Timestamptz(6)
+
   associacao                            associacao? @relation(fields: [associacaoid], references: [id], onDelete: Cascade, onUpdate: NoAction)
   usuario_tarefa_criadoridTousuario     usuario?    @relation("tarefa_criadoridTousuario", fields: [criadorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
   usuario_tarefa_responsavelidTousuario usuario?    @relation("tarefa_responsavelidTousuario", fields: [responsavelid], references: [id], onDelete: Cascade, onUpdate: NoAction)
@@ -385,25 +351,34 @@ model tipo {
   criadorid String?   @db.Uuid
   createdat DateTime? @default(now()) @db.Timestamptz(6)
   updatedat DateTime? @default(now()) @db.Timestamptz(6)
+
+  // Agora referencia o perfil (public.usuario), não auth.users
+  criador   usuario?  @relation(fields: [criadorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
   tarefa    tarefa[]
-  users     users?    @relation(fields: [criadorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@schema("public")
 }
 
 model usuario {
-  id                                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  nome                                 String    @db.VarChar
-  funcao                               String?   @default("COLABORADOR") @db.VarChar
-  createdat                            DateTime? @default(now()) @db.Timestamptz(6)
-  updatedat                            DateTime? @default(now()) @db.Timestamptz(6)
-  user_id                              String?   @db.Uuid
-  users                                users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  tarefa_tarefa_criadoridTousuario     tarefa[]  @relation("tarefa_criadoridTousuario")
-  tarefa_tarefa_responsavelidTousuario tarefa[]  @relation("tarefa_responsavelidTousuario")
+  // PK do perfil = FK para auth.users.id
+  id        String   @id @db.Uuid
+  nome      String   @db.VarChar
+  funcao    String?  @default("COLABORADOR") @db.VarChar
+  createdat DateTime? @default(now()) @db.Timestamptz(6)
+  updatedat DateTime? @default(now()) @db.Timestamptz(6)
+
+  // relação 1:1 obrigatória com auth.users usando o MESMO id
+  user      users    @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  // back-relations
+  tarefa_tarefa_criadoridTousuario     tarefa[] @relation("tarefa_criadoridTousuario")
+  tarefa_tarefa_responsavelidTousuario tarefa[] @relation("tarefa_responsavelidTousuario")
 
   @@schema("public")
 }
+
+/* ====================== ENUMS (inalterados) ====================== */
 
 enum aal_level {
   aal1
