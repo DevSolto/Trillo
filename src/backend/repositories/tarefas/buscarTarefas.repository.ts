@@ -7,7 +7,8 @@ export async function buscarTarefas({ page, perPage, titulo, statusId, prioridad
     where.titulo = { contains: titulo, mode: 'insensitive' }
   }
   if (statusId) {
-    where.statusId = statusId
+    // o campo na tabela é `statusid`, ajustado para refletir o novo schema
+    where.statusid = statusId
   }
   if (prioridade) {
     where.prioridade = prioridade
