@@ -11,14 +11,15 @@ import { buscarTarefasUsecase } from '@backend/usecases/tarefas/buscarTarefas.us
 
 describe('GET /api/tarefas/buscar', () => {
   it('retorna 200 e chama usecase', async () => {
-    const url = new URL('http://localhost/api/tarefas/buscar?statusId=1&page=1&perPage=10')
+    const url = new URL('http://localhost/api/tarefas/buscar?statusId=00000000-0000-0000-0000-000000000000&page=1&perPage=10')
     const req = new Request(url.toString())
     const res = await GET(req as any)
     expect(res.status).toBe(200)
     expect(buscarTarefasUsecase).toHaveBeenCalledWith({
-      statusId: '1',
-      page: '1',
-      perPage: '10'
+      statusId: '00000000-0000-0000-0000-000000000000',
+      page: 1,
+      perPage: 10
     })
   })
 })
+

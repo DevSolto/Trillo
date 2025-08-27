@@ -1,18 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
+import { ZodError } from 'zod'
 import { criarTarefaUsecase } from '@backend/usecases/tarefas/criarTarefa.usecase'
+import { tarefaSchema } from '@backend/shared/validators/tarefa'
 import { AppError } from '@backend/shared/errors/app-error'
 
-export async function POST(request: NextRequest) {
-  const data = await request.json()
+const safeJson = (data: unknown) =>
+  JSON.parse(
+    JSON.stringify(data, (_, value) =>
+      typeof value === 'bigint' ? value.toString() : value
+    )
+  )
+
+export async function POST(request: Request) {
   try {
-    const tarefa = await criarTarefaUsecase(data)
-    return NextResponse.json(tarefa, { status: 201 })
+    const body = tarefaSchema.parse(await request.json())
+    const tarefa = await criarTarefaUsecase(body)
+    return NextResponse.json(safeJson(tarefa), { status: 201 })
   } catch (error) {
-    if (error instanceof AppError) {
+    console.error('POST /api/tarefas/criar', error)
+    if (error instanceof ZodError || error instanceof AppError) {
       return NextResponse.json({ message: error.message }, { status: 400 })
     }
-    console.log(error);
-    
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 })
   }
 }
+
