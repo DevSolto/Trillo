@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, ReactNode } from "react"
 import { CheckCircle2, AlertCircle } from "lucide-react"
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert"
 
 interface Notification {
   type: "success" | "error"

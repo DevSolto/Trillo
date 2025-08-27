@@ -1,11 +1,11 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { DynamicBreadcrumb } from "@/components/dynamic-breadcrumb"
-import { Separator } from "@/components/ui/separator"
+import { AppSidebar } from "@/components/AppSidebar"
+import { DynamicBreadcrumb } from "@/components/DynamicBreadcrumb"
+import { Separator } from "@/components/ui/Separator"
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/Sidebar"
 
 export default function DashboardLayout({
   children,

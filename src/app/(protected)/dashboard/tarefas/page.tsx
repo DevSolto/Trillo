@@ -1,6 +1,6 @@
 // app/(private)/tarefas/page.tsx
 import { columns, type Task } from "./components/columns"
-import { DataTable } from "./components/data-table"
+import { DataTable } from "./components/DataTable"
 
 // Helper robusto para JSON
 async function fetchJSON<T>(url: string) {
