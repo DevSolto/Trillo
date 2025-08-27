@@ -2,6 +2,7 @@
 import { TarefaInput } from '@backend/shared/validators/tarefa'
 import { prisma } from '@backend/prisma/client'
 import { AppError } from '@backend/shared/errors/app-error'
+import { Prisma } from '@prisma/client'
 
 export async function criarTarefa(data: TarefaInput) {
   try {
@@ -30,20 +31,24 @@ export async function criarTarefa(data: TarefaInput) {
         data_fim: data.data_fim,
       },
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof AppError) {
       console.error('Erro de aplicação:', error.message)
       throw error
     }
-    const fieldName = (error?.meta?.field_name || error?.meta?.target || '').toLowerCase()
 
-    if (error?.code === 'P2003') {
-      if (fieldName.includes('responsavelid')) {
-        throw new AppError('Responsável não encontrado')
-      }
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      const meta = error.meta as Record<string, unknown> | undefined
+      const fieldName = ((meta?.field_name ?? meta?.target) as string | undefined)?.toLowerCase() ?? ''
 
-      if (fieldName.includes('criadorid')) {
-        throw new AppError('Criador não encontrado')
+      if (error.code === 'P2003') {
+        if (fieldName.includes('responsavelid')) {
+          throw new AppError('Responsável não encontrado')
+        }
+
+        if (fieldName.includes('criadorid')) {
+          throw new AppError('Criador não encontrado')
+        }
       }
     }
 

@@ -6,6 +6,7 @@ vi.mock('@backend/repositories/associacoes/buscarAssociacoes.repository', () => 
 
 import { buscarAssociacoes } from '@backend/repositories/associacoes/buscarAssociacoes.repository'
 import { buscarAssociacoesUsecase } from '../buscarAssociacoes.usecase'
+import { BuscarAssociacoesInput } from '@backend/shared/validators/buscarAssociacoes'
 
 describe('buscarAssociacoesUsecase', () => {
   it('valida dados e chama repositorio', async () => {
@@ -17,7 +18,7 @@ describe('buscarAssociacoesUsecase', () => {
       nome: 'abc',
       cidade: 'xyz',
       estado: 'SP'
-    } as any)
+    } as unknown as BuscarAssociacoesInput)
     expect(spy).toHaveBeenCalledWith({
       page: 2,
       perPage: 5,

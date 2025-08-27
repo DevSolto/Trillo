@@ -1,8 +1,9 @@
 import { prisma } from '@backend/prisma/client'
 import { BuscarTarefasInput } from '@backend/shared/validators/buscarTarefas'
+import { Prisma } from '@prisma/client'
 
 export async function buscarTarefas({ page, perPage, titulo, statusId, prioridade }: BuscarTarefasInput) {
-  const where: any = {}
+  const where: Prisma.TarefaWhereInput = {}
   if (titulo) {
     where.titulo = { contains: titulo, mode: 'insensitive' }
   }

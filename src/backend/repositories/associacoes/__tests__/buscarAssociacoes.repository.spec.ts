@@ -11,10 +11,11 @@ vi.mock('@backend/prisma/client', () => ({
 
 import { prisma } from '@backend/prisma/client'
 import { buscarAssociacoes } from '../buscarAssociacoes.repository'
+import { BuscarAssociacoesInput } from '@backend/shared/validators/buscarAssociacoes'
 
 describe('buscarAssociacoes.repository', () => {
   it('chama prisma com filtros e paginacao', async () => {
-    await buscarAssociacoes({ page: 2, perPage: 5, nome: 'test', cidade: 'city', estado: 'SP' } as any)
+    await buscarAssociacoes({ page: 2, perPage: 5, nome: 'test', cidade: 'city', estado: 'SP' } as unknown as BuscarAssociacoesInput)
     expect(prisma.associacao.findMany).toHaveBeenCalledWith({
       where: {
         nome: { contains: 'test', mode: 'insensitive' },

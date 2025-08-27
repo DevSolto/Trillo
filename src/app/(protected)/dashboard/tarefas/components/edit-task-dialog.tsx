@@ -64,6 +64,22 @@ interface EditTaskDialogProps {
   children: ReactNode
 }
 
+interface Colaborador {
+  id: string
+  nome: string
+  funcao: string
+}
+
+interface Associacao {
+  id: string
+  nome: string
+}
+
+interface Tipo {
+  id: string
+  nome: string
+}
+
 export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
   const [open, setOpen] = useState(false)
   const [usuarios, setUsuarios] = useState<{ value: string; label: string }[]>([])
@@ -101,29 +117,29 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
   useEffect(() => {
     if (!open) return
 
-    async function fetchJson(url: string) {
+    async function fetchJson<T>(url: string): Promise<T> {
       const res = await fetch(url)
       if (!res.ok) {
         const message = await res.text()
         throw new Error(message || 'Erro ao buscar dados')
       }
-      return res.json()
+      return res.json() as Promise<T>
     }
 
     async function fetchOptions() {
       try {
         const [usuariosRes, associacoesRes, tiposRes] = await Promise.all([
-          fetchJson('/api/colaboradores/buscar?page=1&perPage=100'),
-          fetchJson('/api/associacoes/buscar?page=1&perPage=100'),
-          fetchJson('/api/tipos/buscar?page=1&perPage=100'),
+          fetchJson<{ colaboradores: Colaborador[] }>('/api/colaboradores/buscar?page=1&perPage=100'),
+          fetchJson<{ associacoes: Associacao[] }>('/api/associacoes/buscar?page=1&perPage=100'),
+          fetchJson<{ tipos: Tipo[] }>('/api/tipos/buscar?page=1&perPage=100'),
         ])
 
-        const usuariosOptions = usuariosRes.colaboradores.map((u: any) => ({
+        const usuariosOptions = usuariosRes.colaboradores.map((u) => ({
           value: u.id,
           label: `${u.nome} - ${u.funcao.toLowerCase()}`,
         }))
-        const associacoesOptions = associacoesRes.associacoes.map((a: any) => ({ value: a.id, label: a.nome }))
-        const tiposOptions = tiposRes.tipos.map((t: any) => ({ value: t.id, label: t.nome }))
+        const associacoesOptions = associacoesRes.associacoes.map((a) => ({ value: a.id, label: a.nome }))
+        const tiposOptions = tiposRes.tipos.map((t) => ({ value: t.id, label: t.nome }))
 
         setUsuarios(usuariosOptions)
         setAssociacoes(associacoesOptions)
@@ -132,7 +148,7 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
         form.setValue('responsavel', responsavelId ?? usuariosOptions[0]?.value ?? '')
         form.setValue('associacao', associacaoId ?? associacoesOptions[0]?.value ?? '')
         form.setValue('tipo', tipoId ?? tiposOptions[0]?.value ?? '')
-      } catch (err) {
+      } catch (err: unknown) {
         console.error('Erro ao buscar dados', err)
         setError('Erro ao carregar opções')
       }
@@ -192,7 +208,7 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
       notify({ type: 'success', title: 'Tarefa', message: 'Tarefa editada com sucesso.' })
       setOpen(false)
       router.refresh()
-    } catch (e) {
+    } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Erro ao editar tarefa')
     } finally {
       setIsLoading(false)

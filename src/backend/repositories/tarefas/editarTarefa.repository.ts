@@ -30,7 +30,7 @@ export async function editarTarefa(data: EditarTarefaInput) {
         ...(data.data_fim && { data_fim: data.data_fim })
       }
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof AppError) {
       throw error
     }

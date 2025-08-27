@@ -1,8 +1,9 @@
 import { prisma } from '@backend/prisma/client'
 import { BuscarAssociacoesInput } from '@backend/shared/validators/buscarAssociacoes'
+import { Prisma } from '@prisma/client'
 
 export async function buscarAssociacoes({ page, perPage, nome, cidade, estado }: BuscarAssociacoesInput) {
-  const where: any = {}
+  const where: Prisma.AssociacaoWhereInput = {}
   if (nome) {
     where.nome = { contains: nome, mode: 'insensitive' }
   }
