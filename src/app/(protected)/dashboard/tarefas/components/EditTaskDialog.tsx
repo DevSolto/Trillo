@@ -48,7 +48,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/Alert-dialog";
+} from "@/components/ui/AlertDialog";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Título é obrigatório" }),
