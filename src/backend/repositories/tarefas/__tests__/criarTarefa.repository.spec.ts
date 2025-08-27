@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { criarTarefa } from '@/backend/repositories/tarefas/criarTarefa.repository'
-import { prisma, Prisma } from '@prisma/client'
+import { prisma, Prisma } from '@/prisma/client'
 import { AppError } from '@/backend/shared/errors/app-error'
 import { TarefaInput } from '@/backend/shared/validators/tarefa'
 
-vi.mock('@prisma/client')
+vi.mock('@/prisma/client')
 
 describe('criarTarefa.repository', () => {
   const data: TarefaInput = {

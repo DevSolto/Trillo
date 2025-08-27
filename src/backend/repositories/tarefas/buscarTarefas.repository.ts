@@ -1,6 +1,5 @@
-import { prisma } from '@prisma/client'
+import { prisma, Prisma } from '@/prisma/client'
 import { BuscarTarefasInput } from '@/backend/shared/validators/buscarTarefas'
-import { Prisma } from '@prisma/client'
 
 export async function buscarTarefas({ page, perPage, titulo, statusId, prioridade }: BuscarTarefasInput) {
   const where: Prisma.TarefaWhereInput = {}

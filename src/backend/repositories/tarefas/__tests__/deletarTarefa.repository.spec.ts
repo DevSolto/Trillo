@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { deletarTarefa } from '@/backend/repositories/tarefas/deletarTarefa.repository'
-import { prisma, Prisma } from '@prisma/client'
+import { prisma, Prisma } from '@/prisma/client'
 import { AppError } from '@/backend/shared/errors/app-error'
 
-vi.mock('@prisma/client')
+vi.mock('@/prisma/client')
 
 describe('deletarTarefa.repository', () => {
   afterEach(() => {
