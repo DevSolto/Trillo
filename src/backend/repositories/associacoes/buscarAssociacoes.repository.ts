@@ -1,5 +1,5 @@
 import { prisma } from '@prisma/client'
-import { BuscarAssociacoesInput } from '@backend/shared/validators/buscarAssociacoes'
+import { BuscarAssociacoesInput } from '@/backend/shared/validators/buscarAssociacoes'
 import { Prisma } from '@prisma/client'
 
 export async function buscarAssociacoes({ page, perPage, nome, cidade, estado }: BuscarAssociacoesInput) {

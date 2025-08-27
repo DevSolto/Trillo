@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
-import { criarTarefaUsecase } from '@backend/usecases/tarefas/criarTarefa.usecase'
-import { tarefaSchema } from '@backend/shared/validators/tarefa'
-import { AppError } from '@backend/shared/errors/app-error'
+import { criarTarefaUsecase } from '@/backend/usecases/tarefas/criarTarefa.usecase'
+import { tarefaSchema } from '@/backend/shared/validators/tarefa'
+import { AppError } from '@/backend/shared/errors/app-error'
 
 const safeJson = (data: unknown) =>
   JSON.parse(

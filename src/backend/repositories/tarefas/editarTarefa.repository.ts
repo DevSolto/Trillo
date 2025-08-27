@@ -1,6 +1,6 @@
 import { prisma } from '@prisma/client'
-import { EditarTarefaInput } from '@backend/shared/validators/editarTarefa'
-import { AppError } from '@backend/shared/errors/app-error'
+import { EditarTarefaInput } from '@/backend/shared/validators/editarTarefa'
+import { AppError } from '@/backend/shared/errors/app-error'
 
 export async function editarTarefa(data: EditarTarefaInput) {
   try {

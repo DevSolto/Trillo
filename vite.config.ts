@@ -10,7 +10,6 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@backend': '/src/backend',
       '@': '/src',
       '@prisma': '/prisma'
     }

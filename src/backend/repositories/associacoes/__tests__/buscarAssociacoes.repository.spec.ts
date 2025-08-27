@@ -1,17 +1,29 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@prisma/client', () => ({
-  prisma: {
-    associacao: {
-      findMany: vi.fn().mockResolvedValue([]),
-      count: vi.fn().mockResolvedValue(0)
+vi.mock('@prisma/client', () => {
+  class PrismaClientKnownRequestError extends Error {
+    code: string
+    meta?: unknown
+    constructor({ code, meta }: { code: string; meta?: unknown }) {
+      super()
+      this.code = code
+      this.meta = meta
     }
   }
-}))
+  return {
+    prisma: {
+      associacao: {
+        findMany: vi.fn().mockResolvedValue([]),
+        count: vi.fn().mockResolvedValue(0)
+      }
+    },
+    Prisma: { PrismaClientKnownRequestError }
+  }
+})
 
 import { prisma } from '@prisma/client'
-import { buscarAssociacoes } from '../buscarAssociacoes.repository'
-import { BuscarAssociacoesInput } from '@backend/shared/validators/buscarAssociacoes'
+import { buscarAssociacoes } from '@/backend/repositories/associacoes/buscarAssociacoes.repository'
+import { BuscarAssociacoesInput } from '@/backend/shared/validators/buscarAssociacoes'
 
 describe('buscarAssociacoes.repository', () => {
   it('chama prisma com filtros e paginacao', async () => {

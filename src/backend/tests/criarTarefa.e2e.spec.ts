@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
 
-import { POST } from '../../app/api/tarefas/criar/route'
+import { POST } from '@/app/api/tarefas/criar/route'
 import { NextRequest } from 'next/server'
 
-vi.mock('@backend/usecases/tarefas/criarTarefa.usecase', () => {
+vi.mock('@/backend/usecases/tarefas/criarTarefa.usecase', () => {
   return { criarTarefaUsecase: vi.fn().mockResolvedValue({ id: '1' }) }
 })
 

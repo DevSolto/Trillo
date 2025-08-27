@@ -1,14 +1,14 @@
 import { describe, it, expect, vi } from 'vitest'
-import { GET } from '../../app/api/colaboradores/buscar/route'
+import { GET } from '@/app/api/colaboradores/buscar/route'
 import { NextRequest } from 'next/server'
 
-vi.mock('@backend/usecases/colaboradores/buscarColaboradores.usecase', () => {
+vi.mock('@/backend/usecases/colaboradores/buscarColaboradores.usecase', () => {
   return {
     buscarColaboradoresUsecase: vi.fn().mockResolvedValue({ colaboradores: [], total: 0 })
   }
 })
 
-import { buscarColaboradoresUsecase } from '@backend/usecases/colaboradores/buscarColaboradores.usecase'
+import { buscarColaboradoresUsecase } from '@/backend/usecases/colaboradores/buscarColaboradores.usecase'
 
 describe('GET /api/colaboradores/buscar', () => {
   it('retorna 200 e chama usecase', async () => {

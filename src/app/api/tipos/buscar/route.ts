@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
-import { buscarTiposUsecase } from '@backend/usecases/tipos/buscarTipos.usecase'
-import { buscarTiposSchema } from '@backend/shared/validators/buscarTipos'
-import { AppError } from '@backend/shared/errors/app-error'
+import { buscarTiposUsecase } from '@/backend/usecases/tipos/buscarTipos.usecase'
+import { buscarTiposSchema } from '@/backend/shared/validators/buscarTipos'
+import { AppError } from '@/backend/shared/errors/app-error'
 
 const safeJson = (data: unknown) =>
   JSON.parse(

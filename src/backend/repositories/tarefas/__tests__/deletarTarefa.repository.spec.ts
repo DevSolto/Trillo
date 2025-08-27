@@ -1,13 +1,25 @@
 import { describe, it, expect, vi } from 'vitest'
-import { deletarTarefa } from '../deletarTarefa.repository'
-import { prisma } from '@prisma/client'
-import { AppError } from '@backend/shared/errors/app-error'
+import { deletarTarefa } from '@/backend/repositories/tarefas/deletarTarefa.repository'
+import { prisma, Prisma } from '@prisma/client'
+import { AppError } from '@/backend/shared/errors/app-error'
 
-vi.mock('@prisma/client', () => ({
-  prisma: {
-    tarefa: { delete: vi.fn() }
+vi.mock('@prisma/client', () => {
+  class PrismaClientKnownRequestError extends Error {
+    code: string
+    meta?: unknown
+    constructor({ code, meta }: { code: string; meta?: unknown }) {
+      super()
+      this.code = code
+      this.meta = meta
+    }
   }
-}))
+  return {
+    prisma: {
+      tarefa: { delete: vi.fn() }
+    },
+    Prisma: { PrismaClientKnownRequestError }
+  }
+})
 
 describe('deletarTarefa.repository', () => {
   it('deleta tarefa pelo id', async () => {
@@ -18,7 +30,7 @@ describe('deletarTarefa.repository', () => {
   })
 
   it('lança AppError quando tarefa não existe', async () => {
-    const error = { code: 'P2025' }
+    const error = new Prisma.PrismaClientKnownRequestError({ code: 'P2025' })
     vi.mocked(prisma.tarefa.delete).mockRejectedValue(error as unknown)
     await expect(deletarTarefa('1')).rejects.toBeInstanceOf(AppError)
   })

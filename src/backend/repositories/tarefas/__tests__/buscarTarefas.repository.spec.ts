@@ -1,17 +1,29 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@prisma/client', () => ({
-  prisma: {
-    tarefa: {
-      findMany: vi.fn().mockResolvedValue([]),
-      count: vi.fn().mockResolvedValue(0)
+vi.mock('@prisma/client', () => {
+  class PrismaClientKnownRequestError extends Error {
+    code: string
+    meta?: unknown
+    constructor({ code, meta }: { code: string; meta?: unknown }) {
+      super()
+      this.code = code
+      this.meta = meta
     }
   }
-}))
+  return {
+    prisma: {
+      tarefa: {
+        findMany: vi.fn().mockResolvedValue([]),
+        count: vi.fn().mockResolvedValue(0)
+      }
+    },
+    Prisma: { PrismaClientKnownRequestError }
+  }
+})
 
 import { prisma } from '@prisma/client'
-import { buscarTarefas } from '../buscarTarefas.repository'
-import { BuscarTarefasInput } from '@backend/shared/validators/buscarTarefas'
+import { buscarTarefas } from '@/backend/repositories/tarefas/buscarTarefas.repository'
+import { BuscarTarefasInput } from '@/backend/shared/validators/buscarTarefas'
 
 describe('buscarTarefas.repository', () => {
   it('chama prisma com filtros e paginacao', async () => {

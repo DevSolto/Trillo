@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@backend/repositories/tarefas/buscarTarefas.repository', () => ({
+vi.mock('@/backend/repositories/tarefas/buscarTarefas.repository', () => ({
   buscarTarefas: vi.fn()
 }))
 
-import { buscarTarefas } from '@backend/repositories/tarefas/buscarTarefas.repository'
-import { buscarTarefasUsecase } from '../buscarTarefas.usecase'
-import { BuscarTarefasInput } from '@backend/shared/validators/buscarTarefas'
+import { buscarTarefas } from '@/backend/repositories/tarefas/buscarTarefas.repository'
+import { buscarTarefasUsecase } from '@/backend/usecases/tarefas/buscarTarefas.usecase'
+import { BuscarTarefasInput } from '@/backend/shared/validators/buscarTarefas'
 
 describe('buscarTarefasUsecase', () => {
   it('valida dados e chama repositorio', async () => {

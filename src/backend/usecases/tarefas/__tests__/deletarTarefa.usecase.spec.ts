@@ -1,11 +1,11 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@backend/repositories/tarefas/deletarTarefa.repository', () => ({
+vi.mock('@/backend/repositories/tarefas/deletarTarefa.repository', () => ({
   deletarTarefa: vi.fn()
 }))
 
-import { deletarTarefa } from '@backend/repositories/tarefas/deletarTarefa.repository'
-import { deletarTarefaUsecase } from '../deletarTarefa.usecase'
+import { deletarTarefa } from '@/backend/repositories/tarefas/deletarTarefa.repository'
+import { deletarTarefaUsecase } from '@/backend/usecases/tarefas/deletarTarefa.usecase'
 
 describe('deletarTarefaUsecase', () => {
   it('valida dados e chama repositorio', async () => {

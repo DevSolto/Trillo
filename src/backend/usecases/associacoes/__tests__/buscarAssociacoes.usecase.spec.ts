@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@backend/repositories/associacoes/buscarAssociacoes.repository', () => ({
+vi.mock('@/backend/repositories/associacoes/buscarAssociacoes.repository', () => ({
   buscarAssociacoes: vi.fn(),
 }))
 
-import { buscarAssociacoes } from '@backend/repositories/associacoes/buscarAssociacoes.repository'
-import { buscarAssociacoesUsecase } from '../buscarAssociacoes.usecase'
-import { BuscarAssociacoesInput } from '@backend/shared/validators/buscarAssociacoes'
+import { buscarAssociacoes } from '@/backend/repositories/associacoes/buscarAssociacoes.repository'
+import { buscarAssociacoesUsecase } from '@/backend/usecases/associacoes/buscarAssociacoes.usecase'
+import { BuscarAssociacoesInput } from '@/backend/shared/validators/buscarAssociacoes'
 
 describe('buscarAssociacoesUsecase', () => {
   it('valida dados e chama repositorio', async () => {
