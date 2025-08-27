@@ -1,6 +1,6 @@
 
 import { TarefaInput } from '@backend/shared/validators/tarefa'
-import { prisma } from '@backend/prisma/client'
+import { prisma } from '@prisma/client'
 import { AppError } from '@backend/shared/errors/app-error'
 
 export async function criarTarefa(data: TarefaInput) {

@@ -1,4 +1,4 @@
-import { prisma } from '@backend/prisma/client'
+import { prisma } from '@prisma/client'
 import { BuscarTarefasInput } from '@backend/shared/validators/buscarTarefas'
 
 export async function buscarTarefas({ page, perPage, titulo, statusId, prioridade }: BuscarTarefasInput) {

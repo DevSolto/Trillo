@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
 import { deletarTarefa } from '../deletarTarefa.repository'
-import { prisma } from '@backend/prisma/client'
+import { prisma } from '@prisma/client'
 import { AppError } from '@backend/shared/errors/app-error'
 
-vi.mock('@backend/prisma/client', () => ({
+vi.mock('@prisma/client', () => ({
   prisma: {
     tarefa: { delete: vi.fn() }
   }

@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
 import { criarTarefa } from '../criarTarefa.repository'
-import { prisma } from '@backend/prisma/client'
+import { prisma } from '@prisma/client'
 import { AppError } from '@backend/shared/errors/app-error'
 
-vi.mock('@backend/prisma/client', () => {
+vi.mock('@prisma/client', () => {
   return {
     prisma: {
       tarefa: { create: vi.fn() },

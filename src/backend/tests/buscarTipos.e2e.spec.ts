@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { GET } from '../../app/api/tipos/buscar/route'
+import { GET } from '@/app/api/tipos/buscar/route'
 
 vi.mock('@backend/usecases/tipos/buscarTipos.usecase', () => {
   return {
