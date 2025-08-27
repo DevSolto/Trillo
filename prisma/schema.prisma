@@ -285,7 +285,7 @@ model users {
   mfa_factors                 mfa_factors[]
   one_time_tokens             one_time_tokens[]
   sessions                    sessions[]
-  usuario                     usuario[]
+  usuario                     usuario?
 
   @@index([instance_id])
   @@index([is_anonymous])
