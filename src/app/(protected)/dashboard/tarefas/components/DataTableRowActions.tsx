@@ -32,7 +32,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/Alert-dialog";
+} from "@/components/ui/AlertDialog";
 import { useNotification } from "@/components/NotificationProvider";
 import { deleteTask } from "@/backend/services/tarefas";
 
