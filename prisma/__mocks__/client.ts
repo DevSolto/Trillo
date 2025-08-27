@@ -28,7 +28,8 @@ export class PrismaClient {
     findMany: vi.fn(),
     count: vi.fn(),
     create: vi.fn(),
-    delete: vi.fn()
+    delete: vi.fn(),
+    update: vi.fn()
   }
 
   associacao = {
