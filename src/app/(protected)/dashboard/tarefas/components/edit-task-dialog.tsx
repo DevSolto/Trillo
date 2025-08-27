@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import { useState, useEffect, ReactNode } from 'react'
-import { useRouter } from 'next/navigation'
-import { Loader2 } from 'lucide-react'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { DatePicker } from '@/components/ui/date-picker'
+import { useState, useEffect, ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Dialog,
   DialogTrigger,
@@ -17,17 +17,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog'
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from '@/components/ui/select'
-import { priorities } from './data'
-import { createClient } from '@/lib/client'
-import { useNotification } from '@/components/notification-provider'
+} from "@/components/ui/select";
+import { priorities } from "./data";
+import { useNotification } from "@/components/notification-provider";
+import { useTaskOptions } from "@/hooks/use-task-options";
+import { updateTask } from "@/backend/services/tarefas";
 import {
   Form,
   FormField,
@@ -35,8 +36,8 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from '@/components/ui/form'
-import type { Task } from './columns'
+} from "@/components/ui/form";
+import { Task } from "./columns";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -47,21 +48,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
+} from "@/components/ui/alert-dialog";
 
 const formSchema = z.object({
-  title: z.string().min(1, { message: 'Título é obrigatório' }),
-  description: z.string().min(1, { message: 'Descrição é obrigatória' }),
+  title: z.string().min(1, { message: "Título é obrigatório" }),
+  description: z.string().min(1, { message: "Descrição é obrigatória" }),
   priority: z.string(),
   responsavel: z.string(),
   associacao: z.string(),
   tipo: z.string(),
   dataFim: z.date().optional(),
-})
+});
 
 interface EditTaskDialogProps {
-  task: Task
-  children: ReactNode
+  task: Task;
+  children: ReactNode;
 }
 
 interface Colaborador {
@@ -81,14 +82,17 @@ interface Tipo {
 }
 
 export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
-  const [open, setOpen] = useState(false)
-  const [usuarios, setUsuarios] = useState<{ value: string; label: string }[]>([])
-  const [associacoes, setAssociacoes] = useState<{ value: string; label: string }[]>([])
-  const [tipos, setTipos] = useState<{ value: string; label: string }[]>([])
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
-  const notify = useNotification()
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const notify = useNotification();
+  const {
+    usuarios,
+    associacoes,
+    tipos,
+    error: optionsError,
+  } = useTaskOptions(open);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -96,13 +100,13 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
       title: task.title,
       description: task.description,
       priority: task.priority ?? priorities[1].value,
-      responsavel: task.responsavelId ?? '',
-      associacao: task.associacaoId ?? '',
-      tipo: task.tipoId ?? '',
+      responsavel: task.responsavelId ?? "",
+      associacao: task.associacaoId ?? "",
+      tipo: task.tipoId ?? "",
       dataFim: task.endDate ? new Date(task.endDate) : undefined,
     },
-    mode: 'onChange',
-  })
+    mode: "onChange",
+  });
 
   const {
     title: defaultTitle,
@@ -112,7 +116,7 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
     associacaoId,
     tipoId,
     endDate,
-  } = task
+  } = task;
 
   useEffect(() => {
     if (!open) return
@@ -153,27 +157,47 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
         setError('Erro ao carregar opções')
       }
     }
-
-    fetchOptions()
-  }, [open, form, responsavelId, associacaoId, tipoId])
+    if (tipos.length) {
+      form.setValue("tipo", tipoId ?? tipos[0].value ?? "");
+    }
+  }, [
+    open,
+    usuarios,
+    associacoes,
+    tipos,
+    form,
+    responsavelId,
+    associacaoId,
+    tipoId,
+  ]);
 
   useEffect(() => {
-    if (!open) return
+    if (!open) return;
 
     form.reset({
       title: defaultTitle,
       description: defaultDescription,
       priority: defaultPriority ?? priorities[1].value,
-      responsavel: responsavelId ?? '',
-      associacao: associacaoId ?? '',
-      tipo: tipoId ?? '',
+      responsavel: responsavelId ?? "",
+      associacao: associacaoId ?? "",
+      tipo: tipoId ?? "",
       dataFim: endDate ? new Date(endDate) : undefined,
-    })
-  }, [open, form, defaultTitle, defaultDescription, defaultPriority, responsavelId, associacaoId, tipoId, endDate])
+    });
+  }, [
+    open,
+    form,
+    defaultTitle,
+    defaultDescription,
+    defaultPriority,
+    responsavelId,
+    associacaoId,
+    tipoId,
+    endDate,
+  ]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    setIsLoading(true)
-    setError(null)
+    setIsLoading(true);
+    setError(null);
     try {
       const supabase = createClient()
       const {
@@ -211,22 +235,22 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Erro ao editar tarefa')
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Editar Tarefa</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 py-2">
-
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4 py-2"
+          >
             <FormField
               control={form.control}
               name="title"
@@ -261,8 +285,8 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
                   <FormLabel>Responsável</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className='w-full'>
-                        <SelectValue placeholder='Escolha o responsável por essa tarefa' />
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Escolha o responsável por essa tarefa" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -277,17 +301,16 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
                 </FormItem>
               )}
             />
-            <div className='flex gap-4 justify-between'>
-
+            <div className="flex gap-4 justify-between">
               <FormField
                 control={form.control}
                 name="associacao"
                 render={({ field }) => (
-                  <FormItem className='w-full'>
+                  <FormItem className="w-full">
                     <FormLabel>Associação</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className='w-full'>
+                        <SelectTrigger className="w-full">
                           <SelectValue />
                         </SelectTrigger>
                       </FormControl>
@@ -307,11 +330,11 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
                 control={form.control}
                 name="tipo"
                 render={({ field }) => (
-                  <FormItem className='w-full'>
+                  <FormItem className="w-full">
                     <FormLabel>Tipo</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger className='w-full'>
+                        <SelectTrigger className="w-full">
                           <SelectValue />
                         </SelectTrigger>
                       </FormControl>
@@ -341,23 +364,30 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
                 </FormItem>
               )}
             />
-            {error && <p className="text-sm text-red-500">{error}</p>}
+            {(optionsError || error) && (
+              <p className="text-sm text-red-500">{optionsError || error}</p>
+            )}
             <DialogFooter>
               <Button
                 variant="outline"
                 type="button"
                 onClick={() => {
-                  setOpen(false)
-                  form.reset()
+                  setOpen(false);
+                  form.reset();
                 }}
               >
                 Cancelar
               </Button>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button type="button" disabled={!form.formState.isValid || isLoading}>
-                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    {isLoading ? 'Salvando...' : 'Salvar'}
+                  <Button
+                    type="button"
+                    disabled={!form.formState.isValid || isLoading}
+                  >
+                    {isLoading && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    {isLoading ? "Salvando..." : "Salvar"}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -369,7 +399,10 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
                   </AlertDialogHeader>
                   <AlertDialogFooterRoot>
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction onClick={form.handleSubmit(onSubmit)} disabled={isLoading}>
+                    <AlertDialogAction
+                      onClick={form.handleSubmit(onSubmit)}
+                      disabled={isLoading}
+                    >
                       Confirmar
                     </AlertDialogAction>
                   </AlertDialogFooterRoot>
@@ -380,6 +413,5 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-
