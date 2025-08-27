@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 
-vi.mock('@prisma/client')
+vi.mock('@/prisma/client')
 
-import { prisma } from '@prisma/client'
+import { prisma } from '@/prisma/client'
 import { buscarTipos } from '@/backend/repositories/tipos/buscarTipos.repository'
 import { BuscarTiposInput } from '@/backend/shared/validators/buscarTipos'
 

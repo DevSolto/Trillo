@@ -1,4 +1,4 @@
-import { prisma } from '@prisma/client'
+import { prisma } from '@/prisma/client'
 import { EditarTarefaInput } from '@/backend/shared/validators/editarTarefa'
 import { AppError } from '@/backend/shared/errors/app-error'
 

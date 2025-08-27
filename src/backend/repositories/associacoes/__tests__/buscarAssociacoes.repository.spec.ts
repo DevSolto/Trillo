@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 
-vi.mock('@prisma/client')
+vi.mock('@/prisma/client')
 
-import { prisma } from '@prisma/client'
+import { prisma } from '@/prisma/client'
 import { buscarAssociacoes } from '@/backend/repositories/associacoes/buscarAssociacoes.repository'
 import { BuscarAssociacoesInput } from '@/backend/shared/validators/buscarAssociacoes'
 

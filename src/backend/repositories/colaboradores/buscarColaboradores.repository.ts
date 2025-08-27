@@ -1,6 +1,5 @@
-import { prisma } from '@prisma/client'
+import { prisma, Prisma } from '@/prisma/client'
 import { BuscarColaboradoresInput } from '@/backend/shared/validators/buscarColaboradores'
-import { Prisma } from '@prisma/client'
 
 export async function buscarColaboradores({ page, perPage, nome }: BuscarColaboradoresInput) {
   const where: Prisma.UsuarioWhereInput = { funcao: { in: ['COLABORADOR', 'ADM'] } }

@@ -1,6 +1,5 @@
-import { prisma } from '@prisma/client'
+import { prisma, Prisma } from '@/prisma/client'
 import { AppError } from '@/backend/shared/errors/app-error'
-import { Prisma } from '@prisma/client'
 
 export async function deletarTarefa(id: string) {
   try {

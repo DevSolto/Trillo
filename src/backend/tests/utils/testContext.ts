@@ -26,13 +26,14 @@ export async function createTestContext(): Promise<TestContext> {
   })
 
   pgAdapter = db.adapters.createPg()
+  process.env.DATABASE_URL = 'postgresql://user:pass@localhost:5432/db'
 
   const schema = fs.readFileSync(
     path.join(process.cwd(), 'prisma/test-schema.sql'),
     'utf8'
   )
   db.public.none(schema)
-  vi.unmock('@prisma/client')
+  vi.unmock('@/prisma/client')
   const require = createRequire(import.meta.url)
   const { PrismaClient } = require('@prisma/client')
   const prisma = new PrismaClient()
