@@ -6,10 +6,10 @@ import { Loader2 } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { DatePicker } from "@/components/ui/date-picker";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
+import { DatePicker } from "@/components/ui/DatePicker";
 import {
   Dialog,
   DialogTrigger,
@@ -17,16 +17,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from "@/components/ui/Dialog";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import { priorities } from "./data";
-import { useNotification } from "@/components/notification-provider";
+import { useNotification } from "@/components/NotificationProvider";
 import { useTaskOptions } from "@/hooks/use-task-options";
 import { updateTask } from "@/backend/services/tarefas";
 import {
@@ -36,7 +36,7 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
+} from "@/components/ui/Form";
 import { Task } from "./columns";
 import {
   AlertDialog,
@@ -48,7 +48,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "@/components/ui/Alert-dialog";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Título é obrigatório" }),

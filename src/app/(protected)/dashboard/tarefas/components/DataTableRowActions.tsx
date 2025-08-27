@@ -3,7 +3,7 @@
 import { Row } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,10 +16,10 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/DropdownMenu";
 
 import { labels } from "./data";
-import { EditTaskDialog } from "./edit-task-dialog";
+import { EditTaskDialog } from "./EditTaskDialog";
 import { Task } from "./columns";
 import { useRouter } from "next/navigation";
 import {
@@ -32,8 +32,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { useNotification } from "@/components/notification-provider";
+} from "@/components/ui/Alert-dialog";
+import { useNotification } from "@/components/NotificationProvider";
 import { deleteTask } from "@/backend/services/tarefas";
 
 interface DataTableRowActionsProps<TData extends Task> {
