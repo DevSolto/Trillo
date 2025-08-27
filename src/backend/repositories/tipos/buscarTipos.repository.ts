@@ -1,8 +1,9 @@
 import { prisma } from '@backend/prisma/client'
 import { BuscarTiposInput } from '@backend/shared/validators/buscarTipos'
+import { Prisma } from '@prisma/client'
 
 export async function buscarTipos({ page, perPage, nome }: BuscarTiposInput) {
-  const where: any = {}
+  const where: Prisma.TipoWhereInput = {}
   if (nome) {
     where.nome = { contains: nome, mode: 'insensitive' }
   }

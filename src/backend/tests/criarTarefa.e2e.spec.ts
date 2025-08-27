@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { POST } from '../../app/api/tarefas/criar/route'
+import { NextRequest } from 'next/server'
 
 vi.mock('@backend/usecases/tarefas/criarTarefa.usecase', () => {
   return { criarTarefaUsecase: vi.fn().mockResolvedValue({ id: '1' }) }
@@ -24,7 +25,7 @@ describe('POST /api/tarefas/criar', () => {
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' }
     })
-    const res = await POST(req as any)
+    const res = await POST(req as unknown as NextRequest)
     expect(res.status).toBe(201)
   })
 })

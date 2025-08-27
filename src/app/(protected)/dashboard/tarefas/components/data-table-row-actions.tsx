@@ -40,7 +40,7 @@ interface DataTableRowActionsProps<TData> {
 }
 
 export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TData>) {
-  const task = row.original as any
+  const task = row.original as Task
   const router = useRouter()
   const notify = useNotification()
 
@@ -59,7 +59,7 @@ export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TDa
       } else {
         notify({ type: "error", title: "Tarefa", message: "Falha ao excluir tarefa" })
       }
-    } catch (error) {
+    } catch (error: unknown) {
       notify({ type: "error", title: "Tarefa", message: "Erro ao excluir tarefa" })
     }
   }

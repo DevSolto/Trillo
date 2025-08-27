@@ -11,7 +11,7 @@ vi.mock('@backend/prisma/client', () => ({
 
 describe('deletarTarefa.repository', () => {
   it('deleta tarefa pelo id', async () => {
-    vi.mocked(prisma.tarefa.delete).mockResolvedValue({ id: '1' } as any)
+    vi.mocked(prisma.tarefa.delete).mockResolvedValue({ id: '1' } as unknown)
     const result = await deletarTarefa('1')
     expect(prisma.tarefa.delete).toHaveBeenCalledWith({ where: { id: '1' } })
     expect(result).toEqual({ id: '1' })
@@ -19,7 +19,7 @@ describe('deletarTarefa.repository', () => {
 
   it('lança AppError quando tarefa não existe', async () => {
     const error = { code: 'P2025' }
-    vi.mocked(prisma.tarefa.delete).mockRejectedValue(error as any)
+    vi.mocked(prisma.tarefa.delete).mockRejectedValue(error as unknown)
     await expect(deletarTarefa('1')).rejects.toBeInstanceOf(AppError)
   })
 })

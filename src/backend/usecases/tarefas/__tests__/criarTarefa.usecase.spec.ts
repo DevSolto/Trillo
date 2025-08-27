@@ -10,7 +10,7 @@ import { criarTarefaUsecase } from '../criarTarefa.usecase'
 describe('criarTarefaUsecase', () => {
   it('valida dados e chama repositorio', async () => {
     const spy = vi.mocked(criarTarefa)
-    spy.mockResolvedValue({ id: '1' } as any)
+    spy.mockResolvedValue({ id: '1' } as unknown)
     await criarTarefaUsecase({
       titulo: 't',
       descricao: 'd',
