@@ -65,22 +65,6 @@ interface EditTaskDialogProps {
   children: ReactNode;
 }
 
-interface Colaborador {
-  id: string
-  nome: string
-  funcao: string
-}
-
-interface Associacao {
-  id: string
-  nome: string
-}
-
-interface Tipo {
-  id: string
-  nome: string
-}
-
 export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -119,46 +103,18 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
   } = task;
 
   useEffect(() => {
-    if (!open) return
+    if (!open) return;
 
-    async function fetchJson<T>(url: string): Promise<T> {
-      const res = await fetch(url)
-      if (!res.ok) {
-        const message = await res.text()
-        throw new Error(message || 'Erro ao buscar dados')
-      }
-      return res.json() as Promise<T>
+    if (usuarios.length && !responsavelId) {
+      form.setValue("responsavel", usuarios[0].value);
     }
 
-    async function fetchOptions() {
-      try {
-        const [usuariosRes, associacoesRes, tiposRes] = await Promise.all([
-          fetchJson<{ colaboradores: Colaborador[] }>('/api/colaboradores/buscar?page=1&perPage=100'),
-          fetchJson<{ associacoes: Associacao[] }>('/api/associacoes/buscar?page=1&perPage=100'),
-          fetchJson<{ tipos: Tipo[] }>('/api/tipos/buscar?page=1&perPage=100'),
-        ])
-
-        const usuariosOptions = usuariosRes.colaboradores.map((u) => ({
-          value: u.id,
-          label: `${u.nome} - ${u.funcao.toLowerCase()}`,
-        }))
-        const associacoesOptions = associacoesRes.associacoes.map((a) => ({ value: a.id, label: a.nome }))
-        const tiposOptions = tiposRes.tipos.map((t) => ({ value: t.id, label: t.nome }))
-
-        setUsuarios(usuariosOptions)
-        setAssociacoes(associacoesOptions)
-        setTipos(tiposOptions)
-
-        form.setValue('responsavel', responsavelId ?? usuariosOptions[0]?.value ?? '')
-        form.setValue('associacao', associacaoId ?? associacoesOptions[0]?.value ?? '')
-        form.setValue('tipo', tipoId ?? tiposOptions[0]?.value ?? '')
-      } catch (err: unknown) {
-        console.error('Erro ao buscar dados', err)
-        setError('Erro ao carregar opções')
-      }
+    if (associacoes.length && !associacaoId) {
+      form.setValue("associacao", associacoes[0].value);
     }
-    if (tipos.length) {
-      form.setValue("tipo", tipoId ?? tipos[0].value ?? "");
+
+    if (tipos.length && !tipoId) {
+      form.setValue("tipo", tipos[0].value);
     }
   }, [
     open,
@@ -199,41 +155,22 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
     setIsLoading(true);
     setError(null);
     try {
-      const supabase = createClient()
-      const {
-        data: { user }
-      } = await supabase.auth.getUser()
+      await updateTask({
+        id: task.id,
+        titulo: data.title,
+        descricao: data.description,
+        prioridade: data.priority,
+        responsavelId: data.responsavel,
+        associacaoId: data.associacao,
+        tipoId: data.tipo,
+        data_fim: data.dataFim,
+      });
 
-      if (!user) {
-        throw new Error('Usuário não autenticado')
-      }
-
-      const res = await fetch('/api/tarefas/editar', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          id: task.id,
-          titulo: data.title,
-          descricao: data.description,
-          prioridade: data.priority,
-          responsavelId: data.responsavel,
-          associacaoId: data.associacao,
-          tipoId: data.tipo,
-          data_fim: data.dataFim,
-          criadorId: user.id,
-        })
-      })
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}))
-        throw new Error(errData.message || 'Erro ao editar tarefa')
-      }
-      notify({ type: 'success', title: 'Tarefa', message: 'Tarefa editada com sucesso.' })
-      setOpen(false)
-      router.refresh()
+      notify({ type: "success", title: "Tarefa", message: "Tarefa editada com sucesso." });
+      setOpen(false);
+      router.refresh();
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Erro ao editar tarefa')
+      setError(e instanceof Error ? e.message : "Erro ao editar tarefa");
     } finally {
       setIsLoading(false);
     }
