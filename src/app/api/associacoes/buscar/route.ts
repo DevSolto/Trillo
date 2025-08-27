@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
-import { buscarAssociacoesUsecase } from '@backend/usecases/associacoes/buscarAssociacoes.usecase'
-import { buscarAssociacoesSchema } from '@backend/shared/validators/buscarAssociacoes'
-import { AppError } from '@backend/shared/errors/app-error'
+import { buscarAssociacoesUsecase } from '@/backend/usecases/associacoes/buscarAssociacoes.usecase'
+import { buscarAssociacoesSchema } from '@/backend/shared/validators/buscarAssociacoes'
+import { AppError } from '@/backend/shared/errors/app-error'
 
 const safeJson = (data: unknown) =>
   JSON.parse(

@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@backend/repositories/colaboradores/buscarColaboradores.repository', () => ({
+vi.mock('@/backend/repositories/colaboradores/buscarColaboradores.repository', () => ({
   buscarColaboradores: vi.fn()
 }))
 
-import { buscarColaboradores } from '@backend/repositories/colaboradores/buscarColaboradores.repository'
-import { buscarColaboradoresUsecase } from '../buscarColaboradores.usecase'
-import { BuscarColaboradoresInput } from '@backend/shared/validators/buscarColaboradores'
+import { buscarColaboradores } from '@/backend/repositories/colaboradores/buscarColaboradores.repository'
+import { buscarColaboradoresUsecase } from '@/backend/usecases/colaboradores/buscarColaboradores.usecase'
+import { BuscarColaboradoresInput } from '@/backend/shared/validators/buscarColaboradores'
 
 describe('buscarColaboradoresUsecase', () => {
   it('valida dados e chama repositorio', async () => {

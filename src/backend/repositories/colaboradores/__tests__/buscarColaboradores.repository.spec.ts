@@ -1,17 +1,29 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@prisma/client', () => ({
-  prisma: {
-    usuario: {
-      findMany: vi.fn().mockResolvedValue([]),
-      count: vi.fn().mockResolvedValue(0)
+vi.mock('@prisma/client', () => {
+  class PrismaClientKnownRequestError extends Error {
+    code: string
+    meta?: unknown
+    constructor({ code, meta }: { code: string; meta?: unknown }) {
+      super()
+      this.code = code
+      this.meta = meta
     }
   }
-}))
+  return {
+    prisma: {
+      usuario: {
+        findMany: vi.fn().mockResolvedValue([]),
+        count: vi.fn().mockResolvedValue(0)
+      }
+    },
+    Prisma: { PrismaClientKnownRequestError }
+  }
+})
 
 import { prisma } from '@prisma/client'
-import { buscarColaboradores } from '../buscarColaboradores.repository'
-import { BuscarColaboradoresInput } from '@backend/shared/validators/buscarColaboradores'
+import { buscarColaboradores } from '@/backend/repositories/colaboradores/buscarColaboradores.repository'
+import { BuscarColaboradoresInput } from '@/backend/shared/validators/buscarColaboradores'
 
 describe('buscarColaboradores.repository', () => {
   it('chama prisma com filtros e paginacao', async () => {

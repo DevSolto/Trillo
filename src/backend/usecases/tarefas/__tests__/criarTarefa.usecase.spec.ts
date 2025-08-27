@@ -1,11 +1,11 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@backend/repositories/tarefas/criarTarefa.repository', () => ({
+vi.mock('@/backend/repositories/tarefas/criarTarefa.repository', () => ({
   criarTarefa: vi.fn()
 }))
 
-import { criarTarefa } from '@backend/repositories/tarefas/criarTarefa.repository'
-import { criarTarefaUsecase } from '../criarTarefa.usecase'
+import { criarTarefa } from '@/backend/repositories/tarefas/criarTarefa.repository'
+import { criarTarefaUsecase } from '@/backend/usecases/tarefas/criarTarefa.usecase'
 
 describe('criarTarefaUsecase', () => {
   it('valida dados e chama repositorio', async () => {

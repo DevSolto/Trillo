@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@backend/repositories/tipos/buscarTipos.repository', () => ({
+vi.mock('@/backend/repositories/tipos/buscarTipos.repository', () => ({
   buscarTipos: vi.fn()
 }))
 
-import { buscarTipos } from '@backend/repositories/tipos/buscarTipos.repository'
-import { buscarTiposUsecase } from '../buscarTipos.usecase'
-import { BuscarTiposInput } from '@backend/shared/validators/buscarTipos'
+import { buscarTipos } from '@/backend/repositories/tipos/buscarTipos.repository'
+import { buscarTiposUsecase } from '@/backend/usecases/tipos/buscarTipos.usecase'
+import { BuscarTiposInput } from '@/backend/shared/validators/buscarTipos'
 
 describe('buscarTiposUsecase', () => {
   it('valida dados e chama repositorio', async () => {

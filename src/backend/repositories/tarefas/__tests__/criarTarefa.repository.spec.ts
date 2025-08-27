@@ -1,15 +1,25 @@
 import { describe, it, expect, vi } from 'vitest'
-import { criarTarefa } from '../criarTarefa.repository'
-import { prisma } from '@prisma/client'
-import { AppError } from '@backend/shared/errors/app-error'
-import { TarefaInput } from '@backend/shared/validators/tarefa'
+import { criarTarefa } from '@/backend/repositories/tarefas/criarTarefa.repository'
+import { prisma, Prisma } from '@prisma/client'
+import { AppError } from '@/backend/shared/errors/app-error'
+import { TarefaInput } from '@/backend/shared/validators/tarefa'
 
 vi.mock('@prisma/client', () => {
+  class PrismaClientKnownRequestError extends Error {
+    code: string
+    meta?: unknown
+    constructor({ code, meta }: { code: string; meta?: unknown }) {
+      super()
+      this.code = code
+      this.meta = meta
+    }
+  }
   return {
     prisma: {
       tarefa: { create: vi.fn() },
       usuario: { findUnique: vi.fn() }
-    }
+    },
+    Prisma: { PrismaClientKnownRequestError }
   }
 })
 
@@ -56,14 +66,20 @@ describe('criarTarefa.repository', () => {
 
   it('lança AppError quando prisma retorna P2003 de responsavelid', async () => {
     vi.mocked(prisma.usuario.findUnique).mockResolvedValue({ id: 'responsavel' } as unknown)
-    const prismaError = { code: 'P2003', meta: { field_name: 'tarefa_responsavelid_fkey' } }
+    const prismaError = new Prisma.PrismaClientKnownRequestError({
+      code: 'P2003',
+      meta: { field_name: 'tarefa_responsavelid_fkey' }
+    })
     vi.mocked(prisma.tarefa.create).mockRejectedValue(prismaError as unknown)
     await expect(criarTarefa(data)).rejects.toBeInstanceOf(AppError)
   })
 
   it('lança AppError quando prisma retorna P2003 de criadorid', async () => {
     vi.mocked(prisma.usuario.findUnique).mockResolvedValue({ id: 'responsavel' } as unknown)
-    const prismaError = { code: 'P2003', meta: { field_name: 'tarefa_criadorid_fkey' } }
+    const prismaError = new Prisma.PrismaClientKnownRequestError({
+      code: 'P2003',
+      meta: { field_name: 'tarefa_criadorid_fkey' }
+    })
     vi.mocked(prisma.tarefa.create).mockRejectedValue(prismaError as unknown)
     await expect(criarTarefa(data)).rejects.toBeInstanceOf(AppError)
   })

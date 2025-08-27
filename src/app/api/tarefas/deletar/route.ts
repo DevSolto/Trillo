@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
-import { deletarTarefaUsecase } from '@backend/usecases/tarefas/deletarTarefa.usecase'
-import { deletarTarefaSchema } from '@backend/shared/validators/deletarTarefa'
-import { AppError } from '@backend/shared/errors/app-error'
+import { deletarTarefaUsecase } from '@/backend/usecases/tarefas/deletarTarefa.usecase'
+import { deletarTarefaSchema } from '@/backend/shared/validators/deletarTarefa'
+import { AppError } from '@/backend/shared/errors/app-error'
 
 const safeJson = (data: unknown) =>
   JSON.parse(

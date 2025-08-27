@@ -1,15 +1,15 @@
 import { describe, it, expect, vi } from 'vitest'
 
-import { GET } from '../../app/api/tarefas/buscar/route'
+import { GET } from '@/app/api/tarefas/buscar/route'
 import { NextRequest } from 'next/server'
 
-vi.mock('@backend/usecases/tarefas/buscarTarefas.usecase', () => {
+vi.mock('@/backend/usecases/tarefas/buscarTarefas.usecase', () => {
   return {
     buscarTarefasUsecase: vi.fn().mockResolvedValue({ tarefas: [], total: 0 })
   }
 })
 
-import { buscarTarefasUsecase } from '@backend/usecases/tarefas/buscarTarefas.usecase'
+import { buscarTarefasUsecase } from '@/backend/usecases/tarefas/buscarTarefas.usecase'
 
 describe('GET /api/tarefas/buscar', () => {
   it('retorna 200 e chama usecase', async () => {

@@ -1,5 +1,5 @@
 import { prisma } from '@prisma/client'
-import { BuscarTiposInput } from '@backend/shared/validators/buscarTipos'
+import { BuscarTiposInput } from '@/backend/shared/validators/buscarTipos'
 import { Prisma } from '@prisma/client'
 
 export async function buscarTipos({ page, perPage, nome }: BuscarTiposInput) {
