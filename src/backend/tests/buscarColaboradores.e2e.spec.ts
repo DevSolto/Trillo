@@ -1,26 +1,24 @@
-import { describe, it, expect, vi } from 'vitest'
-import { GET } from '@/app/api/colaboradores/buscar/route'
-import { NextRequest } from 'next/server'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { createTestContext, TestContext } from './utils/testContext'
+import { randomUUID } from 'crypto'
 
-vi.mock('@/backend/usecases/colaboradores/buscarColaboradores.usecase', () => {
-  return {
-    buscarColaboradoresUsecase: vi.fn().mockResolvedValue({ colaboradores: [], total: 0 })
-  }
-})
-
-import { buscarColaboradoresUsecase } from '@/backend/usecases/colaboradores/buscarColaboradores.usecase'
+let ctx: TestContext
 
 describe('GET /api/colaboradores/buscar', () => {
-  it('retorna 200 e chama usecase', async () => {
-    const url = new URL('http://localhost/api/colaboradores/buscar?page=1&perPage=10&nome=joao')
-    const req = new Request(url.toString())
-    const res = await GET(req as unknown as NextRequest)
+  beforeEach(async () => {
+    ctx = await createTestContext()
+    await ctx.prisma.usuario.create({ data: { id: randomUUID(), nome: 'Joao', funcao: 'COLABORADOR' } })
+    await ctx.prisma.usuario.create({ data: { id: randomUUID(), nome: 'Maria', funcao: 'ADM' } })
+  })
+
+  afterEach(async () => {
+    await ctx.close()
+  })
+
+  it('retorna 200 e lista colaboradores', async () => {
+    const res = await ctx.request.get('/api/colaboradores/buscar?page=1&perPage=10&nome=joao')
     expect(res.status).toBe(200)
-    expect(buscarColaboradoresUsecase).toHaveBeenCalledWith({
-      page: 1,
-      perPage: 10,
-      nome: 'joao'
-    })
+    expect(res.body.colaboradores).toHaveLength(1)
+    expect(res.body.colaboradores[0].nome).toBe('Joao')
   })
 })
-
