@@ -10,7 +10,9 @@ datasource db {
   schemas   = ["auth", "public"]
 }
 
-/* ====================== AUTH (inalterado) ====================== */
+/**
+ * ====================== AUTH (inalterado) ======================
+ */
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -283,13 +285,16 @@ model users {
   mfa_factors                 mfa_factors[]
   one_time_tokens             one_time_tokens[]
   sessions                    sessions[]
+  usuario                     usuario[]
 
   @@index([instance_id])
   @@index([is_anonymous])
   @@schema("auth")
 }
 
-/* ====================== PUBLIC ====================== */
+/**
+ * ====================== PUBLIC ======================
+ */
 
 model associacao {
   id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -313,27 +318,27 @@ model status {
   updatedat DateTime? @default(now()) @db.Timestamptz(6)
 
   // Agora referencia o perfil (public.usuario), não auth.users
-  criador   usuario?  @relation("status_criadoridTousuario", fields: [criadorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  criador usuario? @relation("status_criadoridTousuario", fields: [criadorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  tarefa    tarefa[]
+  tarefa tarefa[]
 
   @@schema("public")
 }
 
 model tarefa {
-  id                                    String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  titulo                                String      @db.VarChar
-  descricao                             String?
-  prioridade                            String?     @db.VarChar
-  associacaoid                          String?     @db.Uuid
-  criadorid                             String?     @db.Uuid
-  responsavelid                         String?     @db.Uuid
-  statusid                              String?     @db.Uuid
-  tipoid                                String?     @db.Uuid
-  data_inicio                           DateTime?   @db.Timestamptz(6)
-  data_fim                              DateTime?   @db.Timestamptz(6)
-  createdat                             DateTime?   @default(now()) @db.Timestamptz(6)
-  updatedat                             DateTime?   @default(now()) @db.Timestamptz(6)
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  titulo        String    @db.VarChar
+  descricao     String?
+  prioridade    String?   @db.VarChar
+  associacaoid  String?   @db.Uuid
+  criadorid     String?   @db.Uuid
+  responsavelid String?   @db.Uuid
+  statusid      String?   @db.Uuid
+  tipoid        String?   @db.Uuid
+  data_inicio   DateTime? @db.Timestamptz(6)
+  data_fim      DateTime? @db.Timestamptz(6)
+  createdat     DateTime? @default(now()) @db.Timestamptz(6)
+  updatedat     DateTime? @default(now()) @db.Timestamptz(6)
 
   associacao                            associacao? @relation(fields: [associacaoid], references: [id], onDelete: Cascade, onUpdate: NoAction)
   usuario_tarefa_criadoridTousuario     usuario?    @relation("tarefa_criadoridTousuario", fields: [criadorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
@@ -353,33 +358,36 @@ model tipo {
   updatedat DateTime? @default(now()) @db.Timestamptz(6)
 
   // Agora referencia o perfil (public.usuario), não auth.users
-  criador   usuario?  @relation(fields: [criadorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  criador usuario? @relation("tipo_criadoridTousuario", fields: [criadorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  tarefa    tarefa[]
+  tarefa tarefa[]
 
   @@schema("public")
 }
 
 model usuario {
   // PK do perfil = FK para auth.users.id
-  id        String   @id @db.Uuid
-  nome      String   @db.VarChar
-  funcao    String?  @default("COLABORADOR") @db.VarChar
+  id        String    @id @db.Uuid
+  nome      String    @db.VarChar
+  funcao    String?   @default("COLABORADOR") @db.VarChar
   createdat DateTime? @default(now()) @db.Timestamptz(6)
   updatedat DateTime? @default(now()) @db.Timestamptz(6)
 
   // relação 1:1 obrigatória com auth.users usando o MESMO id
-  user      users    @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user users @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   // back-relations
   tarefa_tarefa_criadoridTousuario     tarefa[] @relation("tarefa_criadoridTousuario")
   tarefa_tarefa_responsavelidTousuario tarefa[] @relation("tarefa_responsavelidTousuario")
   status_criados                       status[] @relation("status_criadoridTousuario")
+  tipos_criados                        tipo[]   @relation("tipo_criadoridTousuario")
 
   @@schema("public")
 }
 
-/* ====================== ENUMS (inalterados) ====================== */
+/**
+ * ====================== ENUMS (inalterados) ======================
+ */
 
 enum aal_level {
   aal1
