@@ -5,6 +5,22 @@ export interface SelectOption {
   label: string;
 }
 
+interface Colaborador {
+  id: string;
+  nome: string;
+  funcao: string;
+}
+
+interface Associacao {
+  id: string;
+  nome: string;
+}
+
+interface Tipo {
+  id: string;
+  nome: string;
+}
+
 interface TaskOptions {
   usuarios: SelectOption[];
   associacoes: SelectOption[];
@@ -13,7 +29,7 @@ interface TaskOptions {
   error: string | null;
 }
 
-async function fetchJson(url: string) {
+async function fetchJson<T>(url: string): Promise<T> {
   const res = await fetch(url);
   if (!res.ok) {
     const message = await res.text();
@@ -39,27 +55,33 @@ export function useTaskOptions(enabled: boolean): TaskOptions {
       setError(null);
       try {
         const [usuariosRes, associacoesRes, tiposRes] = await Promise.all([
-          fetchJson("/api/colaboradores/buscar?page=1&perPage=100"),
-          fetchJson("/api/associacoes/buscar?page=1&perPage=100"),
-          fetchJson("/api/tipos/buscar?page=1&perPage=100"),
+          fetchJson<{ colaboradores: Colaborador[] }>(
+            "/api/colaboradores/buscar?page=1&perPage=100",
+          ),
+          fetchJson<{ associacoes: Associacao[] }>(
+            "/api/associacoes/buscar?page=1&perPage=100",
+          ),
+          fetchJson<{ tipos: Tipo[] }>(
+            "/api/tipos/buscar?page=1&perPage=100",
+          ),
         ]);
 
         if (ignore) return;
 
         setUsuarios(
-          usuariosRes.colaboradores.map((u: any) => ({
+          usuariosRes.colaboradores.map((u) => ({
             value: u.id,
             label: `${u.nome} - ${u.funcao.toLowerCase()}`,
           })),
         );
         setAssociacoes(
-          associacoesRes.associacoes.map((a: any) => ({
+          associacoesRes.associacoes.map((a) => ({
             value: a.id,
             label: a.nome,
           })),
         );
         setTipos(
-          tiposRes.tipos.map((t: any) => ({ value: t.id, label: t.nome })),
+          tiposRes.tipos.map((t) => ({ value: t.id, label: t.nome })),
         );
       } catch (err) {
         if (!ignore) {

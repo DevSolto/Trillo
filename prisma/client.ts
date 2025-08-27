@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-// Import PrismaClient dynamically to avoid path alias conflicts
-const { PrismaClient } = require('@' + 'prisma/client') as any
+import { Prisma, PrismaClient } from "@prisma/client";
 
-export const prisma = new PrismaClient()
+export const prisma = new PrismaClient();
+
+export { Prisma };
