@@ -26,8 +26,7 @@ src/
     ├── usecases/        # Casos de uso por domínio
     ├── repositories/    # Repositórios por domínio
     ├── entities/        # Tipos e validações
-    ├── shared/          # Erros e validadores
-    └── tests/           # Testes E2E/funcionais
+    └── shared/          # Erros e validadores
 ```
 
 ---
@@ -35,25 +34,30 @@ src/
 ## 🧩 Entidades principais
 
 ### `Usuario`
+
 - Integrado ao Supabase Auth
 - Campos: `id`, `email`, `nome`, `tipo` (`admin` ou `operador`)
 - Tabela `PerfilUsuario` vinculada ao `auth.users` do Supabase
 
 ### `Associacao`
+
 - Representa o cliente contábil
 - Campos: `id`, `nome`, `CNPJ`, `cidade`, `estado`, `data_criacao`, etc.
 
 ### `Tarefa`
+
 - Relacionada a uma associação
 - Atribuída diretamente a um usuário responsável
 - Campos: `id`, `nome`, `descricao`, `prazo`, `status`, `id_associacao`, `tipo_id`, `responsavel_id`, `data_criacao`, `data_conclusao`
 
 ### `Status`
+
 - Definido dinamicamente pelo admin
 - Permite etapas customizadas no fluxo
 - Exemplo: "Pendente", "Revisão", "Finalizado"
 
 ### `TipoTarefa`
+
 - Criado dinamicamente pelo usuário
 - Exemplo: “Folha Mensal”, “Apuração Simples Nacional”, “DIRF Anual”
 
@@ -62,6 +66,7 @@ src/
 ## 📄 Funcionalidades
 
 ### Para Admins e Operadores
+
 - Gerenciar **usuários** e **associações**
 - Criar e editar **tarefas**
 - Atribuir **usuário responsável por tarefa**
