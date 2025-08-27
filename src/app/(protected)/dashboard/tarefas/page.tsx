@@ -1,5 +1,5 @@
 // app/(private)/tarefas/page.tsx
-import { columns, Task } from "./components/columns"
+import { columns, type Task } from "./components/columns"
 import { DataTable } from "./components/data-table"
 
 // Helper robusto para JSON
@@ -24,35 +24,53 @@ async function fetchJSON<T>(url: string) {
 
   try {
     return JSON.parse(text) as T
-  } catch (e) {
+  } catch (e: unknown) {
     console.error(`[fetchJSON] ${url} -> Invalid JSON; preview:`, text.slice(0, 200))
     throw e
   }
 }
 
 export default async function TarefasPage() {
-  let tarefas: any[] = []
-  let associacoes: any[] = []
+  interface TarefaApi {
+    id: string
+    createdat: string
+    titulo: string
+    descricao: string
+    status?: { nome: string } | null
+    prioridade?: string | null
+    data_fim?: string | null
+    responsavelid?: string | null
+    associacaoid?: string | null
+    tipoid?: string | null
+  }
+
+  interface AssociacaoApi {
+    id: string
+    nome: string
+  }
+
+  let tarefas: TarefaApi[] = []
+  let associacoes: AssociacaoApi[] = []
 
   try {
     // Use rotas relativas pra aproveitar sessão/cookies e evitar CORS
     const [tarefasData, associacoesData] = await Promise.all([
-      fetchJSON<{ tarefas?: any[] }>("/api/tarefas/buscar"),
-      fetchJSON<{ associacoes?: any[] }>("/api/associacoes/buscar?page=1&perPage=100"),
+      fetchJSON<{ tarefas?: TarefaApi[] }>("/api/tarefas/buscar"),
+      fetchJSON<{ associacoes?: AssociacaoApi[] }>("/api/associacoes/buscar?page=1&perPage=100"),
     ])
 
     tarefas = tarefasData?.tarefas ?? []
     associacoes = associacoesData?.associacoes ?? []
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Erro ao buscar dados de tarefas/associações:", error)
     // segue com arrays vazios pra não quebrar a página
   }
 
   const associacoesMap = Object.fromEntries(
-    (associacoes ?? []).map((a: any) => [a.id, a.nome])
+    (associacoes ?? []).map((a: AssociacaoApi) => [a.id, a.nome])
   )
 
-  const tasks: Task[] = (tarefas ?? []).map((t: any) => ({
+  const tasks: Task[] = (tarefas ?? []).map((t: TarefaApi) => ({
     id: t.id,
     createdAt: t.createdat,           // confira o nome exato que a API retorna (created_at vs createdat)
     title: t.titulo,

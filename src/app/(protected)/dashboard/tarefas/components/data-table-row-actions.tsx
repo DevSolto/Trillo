@@ -39,7 +39,6 @@ import { deleteTask } from "@/backend/services/tarefas";
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
-
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
