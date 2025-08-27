@@ -20,7 +20,7 @@ import {
 
 import { labels } from "./data"
 import { EditTaskDialog } from "./edit-task-dialog"
-import { Task } from "./columns"
+import type { Task } from "./columns"
 import { useRouter } from "next/navigation"
 import {
   AlertDialog,

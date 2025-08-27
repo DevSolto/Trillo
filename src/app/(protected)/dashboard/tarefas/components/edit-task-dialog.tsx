@@ -36,7 +36,7 @@ import {
   FormControl,
   FormMessage,
 } from '@/components/ui/form'
-import { Task } from './columns'
+import type { Task } from './columns'
 import {
   AlertDialog,
   AlertDialogAction,
