@@ -16,9 +16,10 @@ describe('GET /api/colaboradores/buscar', () => {
     const res = await GET(req as any)
     expect(res.status).toBe(200)
     expect(buscarColaboradoresUsecase).toHaveBeenCalledWith({
-      page: '1',
-      perPage: '10',
+      page: 1,
+      perPage: 10,
       nome: 'joao'
     })
   })
 })
+

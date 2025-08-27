@@ -17,8 +17,9 @@ describe('GET /api/tipos/buscar', () => {
     expect(res.status).toBe(200)
     expect(buscarTiposUsecase).toHaveBeenCalledWith({
       nome: 'abc',
-      page: '1',
-      perPage: '10'
+      page: 1,
+      perPage: 10
     })
   })
 })
+
