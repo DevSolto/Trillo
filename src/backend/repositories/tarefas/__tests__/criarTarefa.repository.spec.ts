@@ -1,27 +1,10 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { criarTarefa } from '@/backend/repositories/tarefas/criarTarefa.repository'
 import { prisma, Prisma } from '@prisma/client'
 import { AppError } from '@/backend/shared/errors/app-error'
 import { TarefaInput } from '@/backend/shared/validators/tarefa'
 
-vi.mock('@prisma/client', () => {
-  class PrismaClientKnownRequestError extends Error {
-    code: string
-    meta?: unknown
-    constructor({ code, meta }: { code: string; meta?: unknown }) {
-      super()
-      this.code = code
-      this.meta = meta
-    }
-  }
-  return {
-    prisma: {
-      tarefa: { create: vi.fn() },
-      usuario: { findUnique: vi.fn() }
-    },
-    Prisma: { PrismaClientKnownRequestError }
-  }
-})
+vi.mock('@prisma/client')
 
 describe('criarTarefa.repository', () => {
   const data: TarefaInput = {
@@ -36,6 +19,10 @@ describe('criarTarefa.repository', () => {
     data_inicio: new Date('2024-01-01'),
     data_fim: new Date('2024-01-02'),
   }
+
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
 
   it('insere tarefa com prisma', async () => {
     vi.mocked(prisma.usuario.findUnique).mockResolvedValue({ id: 'responsavel' } as unknown)

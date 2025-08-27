@@ -1,27 +1,15 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { deletarTarefa } from '@/backend/repositories/tarefas/deletarTarefa.repository'
 import { prisma, Prisma } from '@prisma/client'
 import { AppError } from '@/backend/shared/errors/app-error'
 
-vi.mock('@prisma/client', () => {
-  class PrismaClientKnownRequestError extends Error {
-    code: string
-    meta?: unknown
-    constructor({ code, meta }: { code: string; meta?: unknown }) {
-      super()
-      this.code = code
-      this.meta = meta
-    }
-  }
-  return {
-    prisma: {
-      tarefa: { delete: vi.fn() }
-    },
-    Prisma: { PrismaClientKnownRequestError }
-  }
-})
+vi.mock('@prisma/client')
 
 describe('deletarTarefa.repository', () => {
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('deleta tarefa pelo id', async () => {
     vi.mocked(prisma.tarefa.delete).mockResolvedValue({ id: '1' } as unknown)
     const result = await deletarTarefa('1')
