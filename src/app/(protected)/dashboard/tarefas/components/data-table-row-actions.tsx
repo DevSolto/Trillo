@@ -36,13 +36,13 @@ import {
 import { useNotification } from "@/components/notification-provider";
 import { deleteTask } from "@/backend/services/tarefas";
 
-interface DataTableRowActionsProps<TData> {
+interface DataTableRowActionsProps<TData extends Task> {
   row: Row<TData>;
 }
-export function DataTableRowActions<TData>({
+export function DataTableRowActions<TData extends Task>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const task = row.original as any;
+  const task = row.original;
   const router = useRouter();
   const notify = useNotification();
 
