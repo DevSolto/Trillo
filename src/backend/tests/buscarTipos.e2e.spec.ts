@@ -15,7 +15,7 @@ describe('GET /api/tipos/buscar', () => {
   })
 
   afterEach(async () => {
-    await ctx.close()
+    await ctx?.close()
   })
 
   it('retorna 200 e filtra tipos', async () => {

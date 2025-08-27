@@ -12,7 +12,7 @@ describe('GET /api/colaboradores/buscar', () => {
   })
 
   afterEach(async () => {
-    await ctx.close()
+    await ctx?.close()
   })
 
   it('retorna 200 e lista colaboradores', async () => {

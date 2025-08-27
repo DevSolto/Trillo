@@ -37,7 +37,7 @@ describe('GET /api/tarefas/buscar', () => {
   afterEach(async () => {
     vi.restoreAllMocks()
     vi.clearAllMocks()
-    await ctx.close()
+    await ctx?.close()
   })
 
   it('retorna 200 e lista tarefas', async () => {
