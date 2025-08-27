@@ -1,8 +1,9 @@
 import { prisma } from '@prisma/client'
 import { BuscarColaboradoresInput } from '@backend/shared/validators/buscarColaboradores'
+import { Prisma } from '@prisma/client'
 
 export async function buscarColaboradores({ page, perPage, nome }: BuscarColaboradoresInput) {
-  const where: any = { funcao: { in: ['COLABORADOR', 'ADM'] } }
+  const where: Prisma.UsuarioWhereInput = { funcao: { in: ['COLABORADOR', 'ADM'] } }
   if (nome) {
     where.nome = { contains: nome, mode: 'insensitive' }
   }

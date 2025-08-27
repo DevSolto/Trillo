@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 import { labels, priorities, statuses } from "./data"
 
-export type Task = {
+export interface Task {
   id: string
   createdAt: string
   title: string

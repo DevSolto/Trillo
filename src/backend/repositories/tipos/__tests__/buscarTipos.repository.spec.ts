@@ -11,10 +11,11 @@ vi.mock('@prisma/client', () => ({
 
 import { prisma } from '@prisma/client'
 import { buscarTipos } from '../buscarTipos.repository'
+import { BuscarTiposInput } from '@backend/shared/validators/buscarTipos'
 
 describe('buscarTipos.repository', () => {
   it('chama prisma com filtros e paginacao', async () => {
-    await buscarTipos({ page: 2, perPage: 5, nome: 'test' } as any)
+    await buscarTipos({ page: 2, perPage: 5, nome: 'test' } as unknown as BuscarTiposInput)
     expect(prisma.tipo.findMany).toHaveBeenCalledWith({
       where: { nome: { contains: 'test', mode: 'insensitive' } },
       skip: 5,

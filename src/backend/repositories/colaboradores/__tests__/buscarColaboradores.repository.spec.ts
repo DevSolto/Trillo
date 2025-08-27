@@ -11,10 +11,11 @@ vi.mock('@prisma/client', () => ({
 
 import { prisma } from '@prisma/client'
 import { buscarColaboradores } from '../buscarColaboradores.repository'
+import { BuscarColaboradoresInput } from '@backend/shared/validators/buscarColaboradores'
 
 describe('buscarColaboradores.repository', () => {
   it('chama prisma com filtros e paginacao', async () => {
-    await buscarColaboradores({ page: 2, perPage: 5, nome: 'test' } as any)
+    await buscarColaboradores({ page: 2, perPage: 5, nome: 'test' } as unknown as BuscarColaboradoresInput)
     expect(prisma.usuario.findMany).toHaveBeenCalledWith({
       where: { funcao: { in: ['COLABORADOR', 'ADM'] }, nome: { contains: 'test', mode: 'insensitive' } },
       select: { id: true, nome: true, funcao: true },

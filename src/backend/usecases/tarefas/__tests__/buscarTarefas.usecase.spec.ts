@@ -6,6 +6,7 @@ vi.mock('@backend/repositories/tarefas/buscarTarefas.repository', () => ({
 
 import { buscarTarefas } from '@backend/repositories/tarefas/buscarTarefas.repository'
 import { buscarTarefasUsecase } from '../buscarTarefas.usecase'
+import { BuscarTarefasInput } from '@backend/shared/validators/buscarTarefas'
 
 describe('buscarTarefasUsecase', () => {
   it('valida dados e chama repositorio', async () => {
@@ -16,7 +17,7 @@ describe('buscarTarefasUsecase', () => {
       perPage: '5',
       statusId: '00000000-0000-0000-0000-000000000000',
       titulo: 'abc'
-    } as any)
+    } as unknown as BuscarTarefasInput)
     expect(spy).toHaveBeenCalledWith({
       page: 2,
       perPage: 5,

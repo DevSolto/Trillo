@@ -11,10 +11,11 @@ vi.mock('@prisma/client', () => ({
 
 import { prisma } from '@prisma/client'
 import { buscarTarefas } from '../buscarTarefas.repository'
+import { BuscarTarefasInput } from '@backend/shared/validators/buscarTarefas'
 
 describe('buscarTarefas.repository', () => {
   it('chama prisma com filtros e paginacao', async () => {
-    await buscarTarefas({ page: 2, perPage: 5, statusId: '1', titulo: 'test', prioridade: 'alta' } as any)
+    await buscarTarefas({ page: 2, perPage: 5, statusId: '1', titulo: 'test', prioridade: 'alta' } as unknown as BuscarTarefasInput)
     expect(prisma.tarefa.findMany).toHaveBeenCalledWith({
       where: { statusid: '1', prioridade: 'alta', titulo: { contains: 'test', mode: 'insensitive' } },
       skip: 5,

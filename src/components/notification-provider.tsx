@@ -4,13 +4,15 @@ import { createContext, useContext, useState, useCallback, ReactNode } from "rea
 import { CheckCircle2, AlertCircle } from "lucide-react"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 
-type Notification = {
+interface Notification {
   type: "success" | "error"
   title?: string
   message: string
 }
 
-type NotifyFn = (n: Notification) => void
+interface NotifyFn {
+  (n: Notification): void
+}
 
 const NotificationContext = createContext<NotifyFn | null>(null)
 
