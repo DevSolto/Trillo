@@ -20,7 +20,7 @@ describe('POST /api/tarefas/criar', () => {
   afterEach(async () => {
     vi.restoreAllMocks()
     vi.clearAllMocks()
-    await ctx.close()
+    await ctx?.close()
   })
 
   it('retorna 201 e cria tarefa', async () => {
