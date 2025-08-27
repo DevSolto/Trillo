@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "pretest": "prisma generate",
-    "test": "vitest run",
+    "test": "pnpm exec dotenv -e .env.test -- vitest run",
+    "test:watch": "pnpm exec dotenv -e .env.test -- vitest",
     "format": "prettier --write .",
     "prepare": "husky"
   },
@@ -52,6 +53,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitest/ui": "^3.2.4",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^9.32.0",
     "eslint-config-next": "^15.4.4",
     "eslint-config-prettier": "^10.1.8",
