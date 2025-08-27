@@ -72,27 +72,41 @@ export function AddTaskDialog() {
   })
 
   useEffect(() => {
+    async function fetchJson(url: string) {
+      const res = await fetch(url)
+      if (!res.ok) {
+        const message = await res.text()
+        throw new Error(message || 'Erro ao buscar dados')
+      }
+      return res.json()
+    }
+
     async function fetchOptions() {
-      const [usuariosRes, associacoesRes, tiposRes] = await Promise.all([
-        fetch('/api/colaboradores/buscar?page=1&perPage=100').then((r) => r.json()),
-        fetch('/api/associacoes/buscar?page=1&perPage=100').then((r) => r.json()),
-        fetch('/api/tipos/buscar?page=1&perPage=100').then((r) => r.json()),
-      ])
+      try {
+        const [usuariosRes, associacoesRes, tiposRes] = await Promise.all([
+          fetchJson('/api/colaboradores/buscar?page=1&perPage=100'),
+          fetchJson('/api/associacoes/buscar?page=1&perPage=100'),
+          fetchJson('/api/tipos/buscar?page=1&perPage=100'),
+        ])
 
-      const usuariosOptions = usuariosRes.colaboradores.map((u: any) => ({
-        value: u.id,
-        label: `${u.nome} - ${u.funcao.toLowerCase()}`,
-      }))
-      const associacoesOptions = associacoesRes.associacoes.map((a: any) => ({ value: a.id, label: a.nome }))
-      const tiposOptions = tiposRes.tipos.map((t: any) => ({ value: t.id, label: t.nome }))
+        const usuariosOptions = usuariosRes.colaboradores.map((u: any) => ({
+          value: u.id,
+          label: `${u.nome} - ${u.funcao.toLowerCase()}`,
+        }))
+        const associacoesOptions = associacoesRes.associacoes.map((a: any) => ({ value: a.id, label: a.nome }))
+        const tiposOptions = tiposRes.tipos.map((t: any) => ({ value: t.id, label: t.nome }))
 
-      setUsuarios(usuariosOptions)
-      setAssociacoes(associacoesOptions)
-      setTipos(tiposOptions)
+        setUsuarios(usuariosOptions)
+        setAssociacoes(associacoesOptions)
+        setTipos(tiposOptions)
 
-      if (usuariosOptions[0]) form.setValue('responsavel', usuariosOptions[0].value)
-      if (associacoesOptions[0]) form.setValue('associacao', associacoesOptions[0].value)
-      if (tiposOptions[0]) form.setValue('tipo', tiposOptions[0].value)
+        if (usuariosOptions[0]) form.setValue('responsavel', usuariosOptions[0].value)
+        if (associacoesOptions[0]) form.setValue('associacao', associacoesOptions[0].value)
+        if (tiposOptions[0]) form.setValue('tipo', tiposOptions[0].value)
+      } catch (err) {
+        console.error('Erro ao buscar dados', err)
+        setError('Erro ao carregar opções')
+      }
     }
 
     fetchOptions()
