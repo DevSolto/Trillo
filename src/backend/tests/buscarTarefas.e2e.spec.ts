@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createTestContext, TestContext } from './utils/testContext'
 import { randomUUID } from 'crypto'
+import * as buscarTarefasUsecaseModule from '@/backend/usecases/tarefas/buscarTarefas.usecase'
 
 let ctx: TestContext
 let userId: string
@@ -34,6 +35,8 @@ describe('GET /api/tarefas/buscar', () => {
   })
 
   afterEach(async () => {
+    vi.restoreAllMocks()
+    vi.clearAllMocks()
     await ctx.close()
   })
 
@@ -42,5 +45,14 @@ describe('GET /api/tarefas/buscar', () => {
     expect(res.status).toBe(200)
     expect(res.body.tarefas).toHaveLength(1)
     expect(res.body.tarefas[0].titulo).toBe('t')
+  })
+
+  it('retorna 500 quando usecase falha', async () => {
+    vi.spyOn(buscarTarefasUsecaseModule, 'buscarTarefasUsecase').mockRejectedValue(
+      new Error('fail')
+    )
+    const res = await ctx.request.get(`/api/tarefas/buscar?statusId=${STATUS_ID}&page=1&perPage=10`)
+    expect(res.status).toBe(500)
+    expect(res.body.message).toBe('Internal Server Error')
   })
 })
