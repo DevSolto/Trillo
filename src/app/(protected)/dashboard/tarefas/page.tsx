@@ -1,5 +1,5 @@
 // app/(private)/tarefas/page.tsx
-import { columns, Task } from "./components/columns"
+import { columns, type Task } from "./components/columns"
 import { DataTable } from "./components/data-table"
 
 // Helper robusto para JSON

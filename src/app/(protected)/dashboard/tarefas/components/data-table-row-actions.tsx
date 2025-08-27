@@ -20,7 +20,7 @@ import {
 
 import { labels } from "./data"
 import { EditTaskDialog } from "./edit-task-dialog"
-import { Task } from "./columns"
+import type { Task } from "./columns"
 import { useRouter } from "next/navigation"
 import {
   AlertDialog,
@@ -40,7 +40,7 @@ interface DataTableRowActionsProps<TData> {
 }
 
 export function DataTableRowActions<TData>({ row }: DataTableRowActionsProps<TData>) {
-  const task = row.original as any
+  const task = row.original as Task
   const router = useRouter()
   const notify = useNotification()
 
