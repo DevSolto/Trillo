@@ -1,4 +1,4 @@
-import { prisma } from '@backend/prisma/client'
+import { prisma } from '@prisma/client'
 import { BuscarColaboradoresInput } from '@backend/shared/validators/buscarColaboradores'
 import { Prisma } from '@prisma/client'
 

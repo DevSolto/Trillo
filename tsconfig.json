@@ -21,7 +21,8 @@
     "baseUrl": "src",
     "paths": {
       "@/*": ["./*"],
-      "@backend/*": ["backend/*"]
+      "@backend/*": ["backend/*"],
+      "@prisma/*": ["../prisma/*"]
     }
   },
   "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"],

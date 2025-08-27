@@ -1,4 +1,4 @@
-import { prisma } from '@backend/prisma/client'
+import { prisma } from '@prisma/client'
 import { BuscarTiposInput } from '@backend/shared/validators/buscarTipos'
 import { Prisma } from '@prisma/client'
 

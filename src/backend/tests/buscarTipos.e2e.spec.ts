@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
+
 import { GET } from '../../app/api/tipos/buscar/route'
 import { NextRequest } from 'next/server'
 

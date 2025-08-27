@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 
-vi.mock('@backend/prisma/client', () => ({
+vi.mock('@prisma/client', () => ({
   prisma: {
     usuario: {
       findMany: vi.fn().mockResolvedValue([]),
@@ -9,7 +9,7 @@ vi.mock('@backend/prisma/client', () => ({
   }
 }))
 
-import { prisma } from '@backend/prisma/client'
+import { prisma } from '@prisma/client'
 import { buscarColaboradores } from '../buscarColaboradores.repository'
 import { BuscarColaboradoresInput } from '@backend/shared/validators/buscarColaboradores'
 

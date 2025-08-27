@@ -1,4 +1,4 @@
-import { prisma } from '@backend/prisma/client'
+import { prisma } from '@prisma/client'
 import { BuscarAssociacoesInput } from '@backend/shared/validators/buscarAssociacoes'
 import { Prisma } from '@prisma/client'
 
