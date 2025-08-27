@@ -16,10 +16,10 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/DropdownMenu"
 
 import { labels } from "./data"
-import { EditTaskDialog } from "./edit-task-dialog"
+import { EditTaskDialog } from "./EditTaskDialog"
 import { Task } from "./columns"
 import { useRouter } from "next/navigation"
 import {
@@ -32,8 +32,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { useNotification } from "@/components/notification-provider"
+} from "@/components/ui/AlertDialog"
+import { useNotification } from "@/components/NotificationProvider"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>

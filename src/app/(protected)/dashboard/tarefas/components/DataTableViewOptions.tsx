@@ -11,7 +11,7 @@ import {
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/DropdownMenu"
 
 export function DataTableViewOptions<TData>({ table }: { table: Table<TData> }) {
   const columnNameMap: Record<string, string> = {

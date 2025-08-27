@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { DatePicker } from '@/components/ui/date-picker'
+import { DatePicker } from '@/components/ui/DatePicker'
 import {
   Dialog,
   DialogTrigger,
@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/select'
 import { priorities } from './data'
 import { createClient } from '@/lib/client'
-import { useNotification } from '@/components/notification-provider'
+import { useNotification } from '@/components/NotificationProvider'
 import {
   Form,
   FormField,
@@ -47,7 +47,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
+} from '@/components/ui/AlertDialog'
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Título é obrigatório' }),
