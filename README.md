@@ -1,129 +1,127 @@
-# 🧾 Sistema de Tarefas para Escritórios Contábeis de Associações (MVP)
+# 🧾 Sistema de Tarefas para Escritórios Contábeis
 
-Sistema web voltado para escritórios de contabilidade que atendem múltiplas **associações**. Este MVP foca em um escopo mais simples: gerenciamento de tarefas vinculadas diretamente a uma associação e atribuídas a um único responsável.
+Sistema web para escritórios de contabilidade que atendem múltiplas **associações**. Esta versão organiza o frontend em Next.js (App Router) com autenticação via Supabase e consumo de um backend externo via proxy (`/api/*`).
 
----
+—
 
-## ⚙️ Arquitetura
+## 🚀 Visão Rápida (Quickstart)
 
-- **Frontend:** React / Next.js
-- **Backend:** Monolito em TypeScript com 3 camadas:
-  - `controllers` → rotas e validação
-  - `usecases` → lógica de negócio pura
-  - `repositories` → persistência via Prisma ORM
-- **Banco de Dados:** PostgreSQL (via Supabase)
-  - **Autenticação:** Supabase Auth com vínculo entre `user.id` e `PerfilUsuario`
+- Requisitos: Node.js 20+, PNPM 9+ (recomendado), ou NPM
+- Copie `.env.example` para `.env` e preencha as variáveis
+- Instale dependências: `pnpm install`
+- Ambiente de desenvolvimento: `pnpm dev`
+- Build de produção: `pnpm build && pnpm start`
+- Testes: `pnpm test` (ou `pnpm test:watch`)
 
----
+—
+
+## ⚙️ Arquitetura (Nova Organização)
+
+- Frontend: Next.js (App Router) + React, Tailwind CSS 4, shadcn/ui
+- Autenticação: Supabase Auth (SDK no frontend)
+- API: Backend externo consumido via proxy do Next.js (`rewrites`)
+  - Configure `NEXT_PUBLIC_API_URL` no `.env`
+  - O arquivo `next.config.ts` reescreve `/api/:path*` para `${NEXT_PUBLIC_API_URL}/:path*`
+- Definição da API: OpenAPI disponível em `openapi.pretty.json`
+
+—
+
+## 🔧 Variáveis de Ambiente
+
+- `NEXT_PUBLIC_SITE_URL`: URL pública do site (ex.: `http://localhost:3000`)
+- `NEXT_PUBLIC_API_URL`: base URL da API externa (ex.: `https://trillo-back-end.onrender.com`)
+- `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY`: credenciais públicas do projeto Supabase
+
+Copie `./.env.example` para `./.env` e ajuste os valores conforme seu ambiente.
+
+—
 
 ## 📁 Estrutura de Diretórios
 
 ```
 src/
-├── app/                 # Frontend com rotas e páginas
-└── backend/
-    ├── prisma/          # Cliente Prisma
-    ├── usecases/        # Casos de uso por domínio
-    ├── repositories/    # Repositórios por domínio
-    ├── entities/        # Tipos e validações
-    └── shared/          # Erros e validadores
+├── app/            # Páginas, layouts e rotas (App Router)
+│   ├── auth/       # Fluxos de autenticação (login, reset, confirm)
+│   └── (protected)/# Áreas autenticadas (dashboard, tarefas, associações, usuários)
+├── components/     # Componentes reutilizáveis (UI e específicos de tela)
+├── hooks/          # Hooks (ex.: responsividade, dados, utilitários)
+└── lib/            # Clientes (Supabase), middleware e utilitários
+
+root
+├── next.config.ts  # Rewrites para a API externa
+├── middleware.ts   # Atualização de sessão (Supabase SSR)
+├── openapi*.json   # Especificação OpenAPI consumida pelo frontend
+└── vitest.config.ts# Configuração de testes
 ```
 
----
+—
 
-## 🧩 Entidades principais
+## 🔐 Autenticação e Middleware
 
-### `Usuario`
+- O middleware em `middleware.ts` delega para `src/lib/middleware.ts` e mantém a sessão sincronizada (SSR) com o Supabase.
+- Rotas em `(protected)` exigem usuário autenticado; não autenticados são redirecionados para `/auth/login`.
 
-- Integrado ao Supabase Auth
-- Campos: `id`, `email`, `nome`, `tipo` (`admin` ou `operador`)
-- Tabela `PerfilUsuario` vinculada ao `auth.users` do Supabase
+—
 
-### `Associacao`
+## 📄 Páginas e Navegação
 
-- Representa o cliente contábil
-- Campos: `id`, `nome`, `CNPJ`, `cidade`, `estado`, `data_criacao`, etc.
+- Login, confirmação, redefinição de senha (`/auth/*`)
+- Dashboard com KPIs (`/(protected)/dashboard`)
+- Associações: listagem e detalhes
+- Tarefas: listagem com filtros, criação/edição e detalhes
+- Usuários: listagem (apenas áreas autorizadas)
 
-### `Tarefa`
-
-- Relacionada a uma associação
-- Atribuída diretamente a um usuário responsável
-- Campos: `id`, `nome`, `descricao`, `prazo`, `status`, `id_associacao`, `tipo_id`, `responsavel_id`, `data_criacao`, `data_conclusao`
-
-### `Status`
-
-- Definido dinamicamente pelo admin
-- Permite etapas customizadas no fluxo
-- Exemplo: "Pendente", "Revisão", "Finalizado"
-
-### `TipoTarefa`
-
-- Criado dinamicamente pelo usuário
-- Exemplo: “Folha Mensal”, “Apuração Simples Nacional”, “DIRF Anual”
-
----
-
-## 📄 Funcionalidades
-
-### Para Admins e Operadores
-
-- Gerenciar **usuários** e **associações**
-- Criar e editar **tarefas**
-- Atribuir **usuário responsável por tarefa**
-- Criar e editar **status** e **tipos de tarefa**
-- Visualizar **dashboard operacional** com métricas como:
-  - Total de tarefas por associação
-  - Tempo médio por tarefa
-  - Tarefas em andamento, concluídas e atrasadas
-  - Associação mais frequente
-- Listar tarefas com **filtros por cidade, estado, tipo e status**
-- Visualizar **detalhes de cada tarefa**
-
----
-
-## 🧠 Regras de negócio
-
-- Cada tarefa é atribuída a **um único usuário responsável**
-- Os **status** são definidos pelo próprio escritório (dinâmicos)
-- Uma associação pode ter múltiplas tarefas simultâneas
-
----
-
-## 📊 Páginas e navegação
-
-- **Login** (Supabase Auth)
-- **Dashboard** com KPIs
-- **Listagem de Associações** com filtros e paginação
-- **Detalhe da Associação**
-  - Lista de tarefas relacionadas
-- **Listagem de Tarefas**
-  - Filtros por cidade, estado, status e tipo
-- **Detalhe da Tarefa**
-  - Edição da tarefa
-- **Formulário de criação/edição de tarefa**
-- **Gestão de Tipos de Tarefa**
-- **Gestão de Status**
-
----
+—
 
 ## 🧰 Tecnologias
 
-| Camada       | Tecnologia                |
-| ------------ | ------------------------- |
-| Autenticação | Supabase Auth             |
-| ORM          | Prisma                    |
-| Banco        | PostgreSQL                |
-| Backend      | TypeScript Monolito       |
-| Frontend     | Next.js                   |
-| UI           | TailwindCSS com shadcn.ui |
+- Next.js (App Router) + React
+- Tailwind CSS 4 + shadcn/ui + Radix UI
+- Supabase JS/SSR (autenticação)
+- TanStack Table (tabelas)
+- Zod, React Hook Form (validação e formulários)
 
----
+—
 
-## 🚀 Melhorias futuras
+## 🧪 Testes, Lint e Formatação
 
-- Inclusão de múltiplos passos por tarefa
-- Comentários e anexos
-- Histórico de alterações
-- Tarefas recorrentes
-- Modo Kanban
-- Integração com calendário
+- Testes: Vitest + Testing Library
+  - `pnpm test` executa os testes em modo headless
+  - `pnpm test:watch` para desenvolvimento
+- Lint: `pnpm lint` (ESLint)
+- Format: `pnpm format` (Prettier)
+- Husky + lint-staged: executa checks em commits
+
+—
+
+## 🔗 API e Integração
+
+- O frontend consome a API externa via proxy: requisições a `/api/*` são encaminhadas para `${NEXT_PUBLIC_API_URL}`
+- A especificação OpenAPI vive em `openapi.pretty.json` (legível) e `openapi.json`
+- Detalhes estão em `docs/API.md` (como atualizar, endpoints chave e convenções)
+
+—
+
+## 🧠 Modelo de Domínio (resumo)
+
+- Usuário: gerido via Supabase Auth; metadados podem existir em perfil próprio no backend
+- Associação: cliente contábil (identificação, CNPJ, localização, etc.)
+- Tarefa: pertence a uma associação e a um responsável; contém status, tipo, prazos
+- Status: definido dinamicamente pelo escritório
+- Tipo de Tarefa: catálogo dinâmico (ex.: “Folha Mensal”, “DIRF Anual”)
+
+—
+
+## 📌 Roadmap (próximas melhorias)
+
+- Sub-etapas por tarefa, comentários e anexos
+- Histórico de alterações e tarefas recorrentes
+- Modo Kanban e integração com calendário
+
+—
+
+## 📚 Leituras complementares
+
+- Arquitetura detalhada: `docs/ARCHITECTURE.md`
+- API e uso de OpenAPI: `docs/API.md`
+- Contribuição e fluxo de desenvolvimento: `CONTRIBUTING.md`
