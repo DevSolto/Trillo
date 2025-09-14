@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/Input"
 import { DataTableViewOptions } from "./DataTableViewOptions"
 import { AddTaskDialog } from "./AddTaskDialog"
 
-import { priorities, statuses } from "./data"
+import { priorities, statuses } from "@/lib/enums"
 import { DataTableFacetedFilter } from "./DataTableFacetedFilter"
 
 interface DataTableToolbarProps<TData> {

@@ -33,7 +33,7 @@ const cnpjRegex = /^(\d{14}|\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})$/
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Nome é obrigatório' }),
   cnpj: z.string().regex(cnpjRegex, { message: 'CNPJ inválido' }),
-  status: z.boolean().default(true),
+  status: z.boolean(),
 })
 
 interface Props { children: React.ReactNode; association: AssociationRow }
@@ -45,7 +45,7 @@ export function EditAssociationDialog({ children, association }: Props) {
   const notify = useNotification()
   const router = useRouter()
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<z.output<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { name: association.name, cnpj: association.cnpj, status: association.status },
     mode: 'onChange',

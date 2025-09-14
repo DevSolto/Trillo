@@ -52,16 +52,22 @@ export async function requestJson<T>(path: string, opts: RequestOptions = {}): P
       : typeof parsed === 'object' && parsed && 'error' in parsed
         ? (parsed as { error?: string }).error
         : undefined) ?? raw
-    console.error(`[HTTP ${opts.method || 'GET'}] ${path} -> ${res.status}: ${apiMessage}`)
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`[HTTP ${opts.method || 'GET'}] ${path} -> ${res.status}: ${apiMessage}`)
+    }
     throw new Error(apiMessage)
   }
 
   if (!maybeJson) {
-    console.error(`[HTTP] ${path} -> Non-JSON content-type: ${ct}; preview:`, raw.slice(0, 200))
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`[HTTP] ${path} -> Non-JSON content-type: ${ct}; preview:`, raw.slice(0, 200))
+    }
     throw new Error('Non-JSON response')
   }
   if (parsed === undefined) {
-    console.error(`[HTTP] ${path} -> Invalid JSON; preview:`, raw.slice(0, 200))
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`[HTTP] ${path} -> Invalid JSON; preview:`, raw.slice(0, 200))
+    }
     throw new Error('Invalid JSON response')
   }
   return parsed as T
@@ -81,7 +87,9 @@ export async function requestVoid(path: string, opts: RequestOptions = {}): Prom
     const raw = await res.text()
     const data = ct.includes('application/json') ? (() => { try { return JSON.parse(raw) } catch { return null } })() : null
     const message = (data?.message ?? data?.error ?? raw) as string
-    console.error(`[HTTP ${opts.method || 'DELETE'}] ${path} -> ${res.status}: ${message}`)
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`[HTTP ${opts.method || 'DELETE'}] ${path} -> ${res.status}: ${message}`)
+    }
     throw new Error(message)
   }
 }

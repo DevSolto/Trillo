@@ -25,7 +25,9 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/Select'
-import { priorities } from './data'
+import { priorities, statuses as statusDefs } from '@/lib/enums'
+import { MultiUserSelect } from './MultiUserSelect'
+import { requestJson } from '@/services/http'
 import { createClient } from '@/lib/client'
 import { useNotification } from '@/components/NotificationProvider'
 import {
@@ -41,9 +43,9 @@ const formSchema = z.object({
   title: z.string().min(1, { message: 'Título é obrigatório' }),
   description: z.string().min(1, { message: 'Descrição é obrigatória' }),
   priority: z.string(),
-  responsavel: z.string(),
+  team: z.array(z.string()),
   associacao: z.string(),
-  tipo: z.string(),
+  status: z.string().optional(),
   dataFim: z.date().optional(),
 })
 
@@ -67,7 +69,7 @@ export function AddTaskDialog() {
   const [open, setOpen] = useState(false)
   const [usuarios, setUsuarios] = useState<{ value: string; label: string }[]>([])
   const [associacoes, setAssociacoes] = useState<{ value: string; label: string }[]>([])
-  const [tipos, setTipos] = useState<{ value: string; label: string }[]>([])
+  const [statusOptions, setStatusOptions] = useState<{ value: string; label: string }[]>([])
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
@@ -79,48 +81,46 @@ export function AddTaskDialog() {
       title: '',
       description: '',
       priority: priorities[1].value,
-      responsavel: '',
+      team: [],
       associacao: '',
-      tipo: '',
+      status: undefined,
       dataFim: undefined,
     },
     mode: 'onChange',
   })
 
   useEffect(() => {
-    async function fetchJson<T>(url: string): Promise<T> {
-      const res = await fetch(url)
-      if (!res.ok) {
-        const message = await res.text()
-        throw new Error(message || 'Erro ao buscar dados')
-      }
-      return res.json() as Promise<T>
+    async function fetchJson<T>(path: string): Promise<T> {
+      return requestJson<T>(path)
     }
 
     async function fetchOptions() {
       try {
-        const [usuariosRes, associacoesRes, tiposRes] = await Promise.all([
-          fetchJson<{ colaboradores: Colaborador[] }>('/api/colaboradores/buscar?page=1&perPage=100'),
-          fetchJson<{ associacoes: Associacao[] }>('/api/associacoes/buscar?page=1&perPage=100'),
-          fetchJson<{ tipos: Tipo[] }>('/api/tipos/buscar?page=1&perPage=100'),
+        const [usersRes, associationsRes] = await Promise.all([
+          fetchJson<{ items?: any[] }>("/api/user?limit=100&page=1"),
+          fetchJson<{ items?: any[] }>("/api/association?limit=100&page=1"),
         ])
 
-        const usuariosOptions = usuariosRes.colaboradores.map((u) => ({
+        const users: any[] = Array.isArray(usersRes?.items) ? usersRes.items : []
+        const associations: any[] = Array.isArray(associationsRes?.items) ? associationsRes.items : []
+
+        const usuariosOptions = users.map((u: any) => ({
           value: u.id,
-          label: `${u.nome} - ${u.funcao.toLowerCase()}`,
+          label: `${u.name ?? u.email ?? 'Usuário'} - ${(u.role ?? '').toString().toLowerCase()}`,
         }))
-        const associacoesOptions = associacoesRes.associacoes.map((a) => ({ value: a.id, label: a.nome }))
-        const tiposOptions = tiposRes.tipos.map((t) => ({ value: t.id, label: t.nome }))
+        const associacoesOptions = associations.map((a: any) => ({ value: a.id, label: a.name ?? a.nome ?? 'Associação' }))
+        const tiposOptions = statusDefs.map((s) => ({ value: s.value, label: s.label }))
 
         setUsuarios(usuariosOptions)
         setAssociacoes(associacoesOptions)
-        setTipos(tiposOptions)
+        setStatusOptions(tiposOptions)
 
-        if (usuariosOptions[0]) form.setValue('responsavel', usuariosOptions[0].value)
         if (associacoesOptions[0]) form.setValue('associacao', associacoesOptions[0].value)
-        if (tiposOptions[0]) form.setValue('tipo', tiposOptions[0].value)
+        if (tiposOptions[0]) form.setValue('status', tiposOptions[0].value)
       } catch (err: unknown) {
-        console.error('Erro ao buscar dados', err)
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn('Erro ao buscar dados', err)
+        }
         setError('Erro ao carregar opções')
       }
     }
@@ -141,28 +141,18 @@ export function AddTaskDialog() {
         throw new Error('Usuário não autenticado')
       }
 
-      const res = await fetch('/api/tarefas/criar', {
+      await requestJson<void>('/api/task', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
+        body: {
+          title: data.title,
+          description: data.description,
+          dueDate: data.dataFim ? new Date(data.dataFim).toISOString() : undefined,
+          creatorId: user.id,
+          associationId: data.associacao,
+          teamIds: Array.isArray(data.team) ? data.team : [],
+          status: data.status,
         },
-        body: JSON.stringify({
-          titulo: data.title,
-          descricao: data.description,
-          prioridade: data.priority,
-          responsavelId: data.responsavel,
-          associacaoId: data.associacao,
-          tipoId: data.tipo,
-          data_fim: data.dataFim,
-          statusId: null,
-          criadorId: user.id,
-          data_inicio: new Date()
-        })
       })
-      if (!res.ok) {
-        const errData = await res.json().catch(() => ({}))
-        throw new Error(errData.message || 'Erro ao criar tarefa')
-      }
       notify({ type: 'success', title: 'Tarefa', message: 'Tarefa criada com sucesso.' })
       setOpen(false)
       form.reset()
@@ -214,24 +204,18 @@ export function AddTaskDialog() {
             />
             <FormField
               control={form.control}
-              name="responsavel"
+              name="team"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Responsável</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className='w-full'>
-                        <SelectValue placeholder='Escolha o responsável por essa tarefa' />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {usuarios.map((u) => (
-                        <SelectItem key={u.value} value={u.value}>
-                          {u.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Time</FormLabel>
+                  <FormControl>
+                    <MultiUserSelect
+                      options={usuarios}
+                      value={field.value || []}
+                      onChange={(vals) => field.onChange(vals)}
+                      placeholder='Selecione os participantes do time'
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -264,10 +248,10 @@ export function AddTaskDialog() {
               />
               <FormField
                 control={form.control}
-                name="tipo"
+                name="status"
                 render={({ field }) => (
                   <FormItem className='w-full'>
-                    <FormLabel>Tipo</FormLabel>
+                    <FormLabel>Status</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className='w-full'>
@@ -275,9 +259,9 @@ export function AddTaskDialog() {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {tipos.map((t) => (
-                          <SelectItem key={t.value} value={t.value}>
-                            {t.label}
+                        {statusOptions.map((s) => (
+                          <SelectItem key={s.value} value={s.value}>
+                            {s.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -323,4 +307,3 @@ export function AddTaskDialog() {
     </Dialog>
   )
 }
-

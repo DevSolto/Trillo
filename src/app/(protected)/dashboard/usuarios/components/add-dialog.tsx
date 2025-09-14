@@ -31,7 +31,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Nome é obrigatório' }),
   email: z.string().email({ message: 'E-mail inválido' }),
-  role: z.enum(['admin', 'editor'], { required_error: 'Perfil é obrigatório' }),
+  role: z.enum(['admin', 'editor']),
 })
 
 export function AddUserDialog() {

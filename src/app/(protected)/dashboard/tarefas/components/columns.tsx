@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/Badge"
 import { Checkbox } from "@/components/ui/Checkbox"
 
-import { labels, priorities, statuses } from "./data"
+import { labels, priorities, statuses } from "@/lib/enums"
 
 export interface Task {
   id: string
@@ -17,6 +17,7 @@ export interface Task {
   priority: string | null
   endDate: string | null
   responsavelId: string | null
+  teamIds?: string[]
   associacaoId: string | null
   associacao: string | null
   tipoId: string | null

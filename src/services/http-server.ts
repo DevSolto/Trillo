@@ -52,7 +52,9 @@ export async function requestJsonServer<T>(path: string, opts: RequestOptions = 
       : typeof parsed === 'object' && parsed && 'error' in parsed
         ? (parsed as { error?: string }).error
         : undefined) ?? raw
-    console.error(`[HTTP(S) ${opts.method || 'GET'}] ${path} -> ${res.status}: ${apiMessage}`)
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`[HTTP(S) ${opts.method || 'GET'}] ${path} -> ${res.status}: ${apiMessage}`)
+    }
     throw new Error(apiMessage)
   }
 
@@ -76,7 +78,9 @@ export async function requestVoidServer(path: string, opts: RequestOptions = {})
     const raw = await res.text()
     const data = ct.includes('application/json') ? (() => { try { return JSON.parse(raw) } catch { return null } })() : null
     const message = (data?.message ?? data?.error ?? raw) as string
-    console.error(`[HTTP(S) ${opts.method || 'DELETE'}] ${path} -> ${res.status}: ${message}`)
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(`[HTTP(S) ${opts.method || 'DELETE'}] ${path} -> ${res.status}: ${message}`)
+    }
     throw new Error(message)
   }
 }

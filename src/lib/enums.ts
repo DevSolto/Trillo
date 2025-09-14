@@ -21,4 +21,8 @@ export const priorities = [
   { label: 'Média', value: 'medium', icon: ArrowRight },
   { label: 'Alta', value: 'high', icon: ArrowUp },
 ]
-
+export const labels = [
+  { value: 'bug', label: 'Erro' },
+  { value: 'feature', label: 'Funcionalidade' },
+  { value: 'documentation', label: 'Documentação' },
+]

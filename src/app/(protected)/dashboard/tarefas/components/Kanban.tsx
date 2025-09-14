@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from 'react'
-import { statuses } from './data'
+import { statuses } from '@/lib/enums'
 import type { Task } from './columns'
 import { Badge } from '@/components/ui/Badge'
 

@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 
-import { labels } from "./data";
+import { labels } from "@/lib/enums";
 import { EditTaskDialog } from "./EditTaskDialog";
 import { Task } from "./columns";
 import { useRouter } from "next/navigation";
@@ -34,7 +34,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/AlertDialog";
 import { useNotification } from "@/components/NotificationProvider";
-import { deleteTask } from "@/backend/services/tarefas";
+import { deleteTask } from "@/services/tarefas";
 
 interface DataTableRowActionsProps<TData extends Task> {
   row: Row<TData>;
@@ -89,7 +89,7 @@ export function DataTableRowActions<TData extends Task>({
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Rótulos</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={task.label}>
+            <DropdownMenuRadioGroup value={task.label ?? undefined}>
               {labels.map((label) => (
                 <DropdownMenuRadioItem key={label.value} value={label.value}>
                   {label.label}

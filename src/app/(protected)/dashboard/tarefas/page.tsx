@@ -1,104 +1,44 @@
 // app/(private)/tarefas/page.tsx
 import { columns, type Task } from './components/columns';
 import { DataTable } from './components/DataTable';
+import { listTasksServer } from '@/services/tarefas/list-tasks';
 
-// Helper robusto para JSON
-// Node's global `fetch` exige URLs absolutas quando executado no servidor.
-// Construímos a URL final a partir de `NEXT_PUBLIC_API_URL` (ou localhost)
-// para evitar "Failed to parse URL" ao usar caminhos relativos.
-async function fetchJSON<T>(url: string) {
-  const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-  const fullUrl = new URL(url, base);
-  const res = await fetch(fullUrl, {
-    cache: 'no-store',
-    headers: { accept: 'application/json' },
-  });
-
-  const ct = res.headers.get('content-type') || '';
-  const text = await res.text();
-
-  if (!res.ok) {
-    console.error(
-      `[fetchJSON] ${url} -> HTTP ${res.status}`,
-      text.slice(0, 300)
-    );
-    throw new Error(`HTTP ${res.status} on ${url}`);
-  }
-
-  if (!ct.includes('application/json')) {
-    console.error(
-      `[fetchJSON] ${url} -> Non-JSON content-type: ${ct}; preview:`,
-      text.slice(0, 200)
-    );
-    throw new Error(`Non-JSON response from ${url}`);
-  }
-
-  try {
-    return JSON.parse(text) as T;
-  } catch (e: unknown) {
-    console.error(
-      `[fetchJSON] ${url} -> Invalid JSON; preview:`,
-      text.slice(0, 200)
-    );
-    throw e;
-  }
-}
+// Dados vêm do backend externo via proxy /api, usando serviço SSR.
 
 export default async function TarefasPage() {
-  interface TarefaApi {
+  let tarefas: {
     id: string;
-    createdat: string;
-    titulo: string;
-    descricao: string;
-    status?: { nome: string } | null;
-    prioridade?: string | null;
-    data_fim?: string | null;
-    responsavelid?: string | null;
-    associacaoid?: string | null;
-    tipoid?: string | null;
-  }
-
-  interface AssociacaoApi {
-    id: string;
-    nome: string;
-  }
-
-  let tarefas: TarefaApi[] = [];
-  let associacoes: AssociacaoApi[] = [];
-
+    createdAt: string;
+    title: string;
+    description: string;
+    status?: string | null;
+    dueDate?: string | null;
+    association?: { id: string; name?: string | null } | null;
+    team?: { id: string }[] | null;
+  }[] = [];
   try {
-    // Use rotas relativas pra aproveitar sessão/cookies e evitar CORS
-    const [tarefasData, associacoesData] = await Promise.all([
-      fetchJSON<{ tarefas?: TarefaApi[] }>('/api/tarefas/buscar'),
-      fetchJSON<{ associacoes?: AssociacaoApi[] }>(
-        '/api/associacoes/buscar?page=1&perPage=100'
-      ),
-    ]);
-
-    tarefas = tarefasData?.tarefas ?? [];
-    associacoes = associacoesData?.associacoes ?? [];
+    const data = await listTasksServer({ page: 1, limit: 100 });
+    tarefas = data?.items ?? [];
   } catch (error: unknown) {
-    console.error('Erro ao buscar dados de tarefas/associações:', error);
-    // segue com arrays vazios pra não quebrar a página
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Falha ao buscar tarefas (usando lista vazia).', error);
+    }
   }
 
-  const associacoesMap = Object.fromEntries(
-    (associacoes ?? []).map((a: AssociacaoApi) => [a.id, a.nome])
-  );
-
-  const tasks: Task[] = (tarefas ?? []).map((t: TarefaApi) => ({
+  const tasks: Task[] = (tarefas ?? []).map((t) => ({
     id: t.id,
-    createdAt: t.createdat, // confira o nome exato que a API retorna (created_at vs createdat)
-    title: t.titulo,
-    description: t.descricao,
-    status: t.status?.nome ?? null,
-    label: t.tipoid ?? null,
-    priority: t.prioridade ?? null,
-    endDate: t.data_fim ?? null,
-    responsavelId: t.responsavelid ?? null,
-    associacaoId: t.associacaoid ?? null,
-    associacao: associacoesMap[t.associacaoid] ?? null,
-    tipoId: t.tipoid ?? null,
+    createdAt: t.createdAt,
+    title: t.title,
+    description: t.description,
+    status: t.status ?? null,
+    label: null,
+    priority: null,
+    endDate: t.dueDate ?? null,
+    responsavelId: t.team?.[0]?.id ?? null,
+    teamIds: Array.isArray(t.team) ? t.team.map((u) => u.id) : [],
+    associacaoId: t.association?.id ?? null,
+    associacao: t.association?.name ?? null,
+    tipoId: null,
   }));
 
   return (

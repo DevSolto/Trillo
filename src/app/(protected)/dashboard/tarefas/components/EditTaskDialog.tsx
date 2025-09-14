@@ -25,10 +25,11 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/Select";
-import { priorities } from "./data";
+import { priorities, statuses } from "@/lib/enums";
+import { MultiUserSelect } from "./MultiUserSelect";
 import { useNotification } from "@/components/NotificationProvider";
 import { useTaskOptions } from "@/hooks/use-task-options";
-import { updateTask } from "@/backend/services/tarefas";
+import { updateTask } from "@/services/tarefas";
 import {
   Form,
   FormField,
@@ -54,9 +55,9 @@ const formSchema = z.object({
   title: z.string().min(1, { message: "Título é obrigatório" }),
   description: z.string().min(1, { message: "Descrição é obrigatória" }),
   priority: z.string(),
-  responsavel: z.string(),
+  team: z.array(z.string()),
   associacao: z.string(),
-  tipo: z.string(),
+  status: z.string().optional(),
   dataFim: z.date().optional(),
 });
 
@@ -84,9 +85,9 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
       title: task.title,
       description: task.description,
       priority: task.priority ?? priorities[1].value,
-      responsavel: task.responsavelId ?? "",
+      team: task.teamIds ?? [],
       associacao: task.associacaoId ?? "",
-      tipo: task.tipoId ?? "",
+      status: task.status ?? undefined,
       dataFim: task.endDate ? new Date(task.endDate) : undefined,
     },
     mode: "onChange",
@@ -105,26 +106,20 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
   useEffect(() => {
     if (!open) return;
 
-    if (usuarios.length && !responsavelId) {
-      form.setValue("responsavel", usuarios[0].value);
-    }
-
     if (associacoes.length && !associacaoId) {
       form.setValue("associacao", associacoes[0].value);
     }
-
-    if (tipos.length && !tipoId) {
-      form.setValue("tipo", tipos[0].value);
+    if (!task.status && statuses.length) {
+      form.setValue("status", statuses[0].value);
     }
   }, [
     open,
     usuarios,
     associacoes,
-    tipos,
     form,
     responsavelId,
     associacaoId,
-    tipoId,
+    task.status,
   ]);
 
   useEffect(() => {
@@ -134,9 +129,9 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
       title: defaultTitle,
       description: defaultDescription,
       priority: defaultPriority ?? priorities[1].value,
-      responsavel: responsavelId ?? "",
+      team: task.teamIds ?? [],
       associacao: associacaoId ?? "",
-      tipo: tipoId ?? "",
+      status: task.status ?? undefined,
       dataFim: endDate ? new Date(endDate) : undefined,
     });
   }, [
@@ -147,8 +142,9 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
     defaultPriority,
     responsavelId,
     associacaoId,
-    tipoId,
     endDate,
+    task.status,
+    task.teamIds,
   ]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
@@ -160,9 +156,9 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
         titulo: data.title,
         descricao: data.description,
         prioridade: data.priority,
-        responsavelId: data.responsavel,
+        teamIds: Array.isArray(data.team) ? data.team : [],
         associacaoId: data.associacao,
-        tipoId: data.tipo,
+        status: data.status,
         data_fim: data.dataFim,
       });
 
@@ -216,24 +212,18 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
             />
             <FormField
               control={form.control}
-              name="responsavel"
+              name="team"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Responsável</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Escolha o responsável por essa tarefa" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {usuarios.map((u) => (
-                        <SelectItem key={u.value} value={u.value}>
-                          {u.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>Time</FormLabel>
+                  <FormControl>
+                    <MultiUserSelect
+                      options={usuarios}
+                      value={field.value || []}
+                      onChange={(vals) => field.onChange(vals)}
+                      placeholder="Selecione os participantes do time"
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -265,10 +255,10 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
               />
               <FormField
                 control={form.control}
-                name="tipo"
+                name="status"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Tipo</FormLabel>
+                    <FormLabel>Status</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className="w-full">
@@ -276,9 +266,9 @@ export function EditTaskDialog({ task, children }: EditTaskDialogProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {tipos.map((t) => (
-                          <SelectItem key={t.value} value={t.value}>
-                            {t.label}
+                        {statuses.map((s) => (
+                          <SelectItem key={s.value} value={s.value}>
+                            {s.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
