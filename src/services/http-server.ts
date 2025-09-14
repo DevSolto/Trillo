@@ -1,4 +1,4 @@
-import { apiUrl } from '@/lib/endpoints'
+import { apiUrl, API_BASE_URL } from '@/lib/endpoints'
 import { getServerAccessToken } from '@/lib/auth-server'
 
 export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE'
@@ -29,7 +29,11 @@ async function buildHeaders(extra?: HeadersInit): Promise<Headers> {
 }
 
 export async function requestJsonServer<T>(path: string, opts: RequestOptions = {}): Promise<T> {
-  const url = apiUrl(path)
+  // On the server, Node fetch requires absolute URLs.
+  // For proxy paths like "/api/...", resolve against external API base.
+  const url = path.startsWith('/api/')
+    ? new URL(path.replace(/^\/api\//, ''), API_BASE_URL).toString()
+    : apiUrl(path)
   const headers = await buildHeaders({ 'Content-Type': 'application/json', ...(opts.headers || {}) })
   const res = await fetch(url, {
     method: opts.method || 'GET',
@@ -65,7 +69,9 @@ export async function requestJsonServer<T>(path: string, opts: RequestOptions = 
 }
 
 export async function requestVoidServer(path: string, opts: RequestOptions = {}): Promise<void> {
-  const url = apiUrl(path)
+  const url = path.startsWith('/api/')
+    ? new URL(path.replace(/^\/api\//, ''), API_BASE_URL).toString()
+    : apiUrl(path)
   const headers = await buildHeaders({ ...(opts.headers || {}) })
   const res = await fetch(url, {
     method: opts.method || 'DELETE',
