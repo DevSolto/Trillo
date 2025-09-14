@@ -14,8 +14,8 @@ export function ViewToggle({ view }: ViewToggleProps) {
 
   function hrefFor(v: 'table' | 'kanban') {
     const sp = new URLSearchParams(searchParams?.toString())
-    if (v === 'table') sp.delete('view')
-    else sp.set('view', 'kanban')
+    if (v === 'kanban') sp.delete('view')
+    else sp.set('view', 'table')
     const qs = sp.toString()
     return qs ? `${pathname}?${qs}` : pathname
   }
@@ -27,4 +27,3 @@ export function ViewToggle({ view }: ViewToggleProps) {
     </div>
   )
 }
-
