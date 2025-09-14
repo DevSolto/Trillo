@@ -1,33 +1,9 @@
-# Contribuindo
+# Política de Contribuição
 
-Obrigado por contribuir! Este guia resume o fluxo de desenvolvimento.
+Este é um projeto comercial e não aceita contribuições externas.
 
-## Requisitos
+- Repositório: uso interno. Pull Requests e Issues públicos não são processados.
+- Diretrizes internas: o fluxo de desenvolvimento, revisão e release é definido em documentação privada da equipe.
+- Reportes: dúvidas, bugs ou solicitações devem seguir os canais internos definidos pela organização.
 
-- Node.js 20+
-- PNPM 9+ (ou NPM/Yarn)
-
-## Setup
-
-1) Copie `.env.example` para `.env` e preencha as variáveis
-2) Instale dependências: `pnpm install`
-3) Rode o ambiente: `pnpm dev`
-
-## Scripts úteis
-
-- `pnpm dev` / `pnpm build` / `pnpm start`
-- `pnpm test` / `pnpm test:watch`
-- `pnpm lint` / `pnpm format`
-
-## Qualidade de código
-
-- ESLint + Prettier com husky/lint-staged nos commits
-- Mantenha componentes coesos e pequenos; prefira composição
-- Validação com Zod e formulários com React Hook Form
-
-## Git e PRs
-
-- Crie branches descritivas (ex.: `feat/tarefas-filtros`, `fix/auth-redirect`)
-- Abra PRs pequenos, com descrição do contexto e screenshots quando útil
-- Checklist: build passa, testes relevantes, lint/format ok, docs atualizadas
-
+Se você faz parte da equipe, siga as instruções do handbook interno (rastreador de tarefas, convenções de branch/commit, política de revisão e versionamento).

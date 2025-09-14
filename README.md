@@ -127,4 +127,4 @@ root
 
 - Arquitetura detalhada: `docs/ARCHITECTURE.md`
 - API e integração: `docs/API.md`
-- Contribuição e fluxo de desenvolvimento: `CONTRIBUTING.md`
+- Política de contribuição: projeto comercial; sem contribuições externas (`CONTRIBUTING.md`)
