@@ -1,26 +1,12 @@
 import { useEffect, useState } from "react";
-import { apiUrl } from "@/lib/endpoints";
+import { requestJson } from "@/services/http";
 
 export interface SelectOption {
   value: string;
   label: string;
 }
 
-interface Colaborador {
-  id: string;
-  nome: string;
-  funcao: string;
-}
-
-interface Associacao {
-  id: string;
-  nome: string;
-}
-
-interface Tipo {
-  id: string;
-  nome: string;
-}
+// Tipos de apoio não são necessários; respostas são tratadas genericamente
 
 interface TaskOptions {
   usuarios: SelectOption[];
@@ -32,30 +18,7 @@ interface TaskOptions {
 }
 
 async function fetchJson<T>(path: string): Promise<T> {
-  const { getAccessToken } = await import("@/lib/auth-client");
-  const token = await getAccessToken();
-  const res = await fetch(apiUrl(path), {
-    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-  });
-  if (!res.ok) {
-    const ct = res.headers.get("content-type") || "";
-    const raw = await res.text();
-    const data = ct.includes("application/json")
-      ? (() => {
-          try {
-            return JSON.parse(raw);
-          } catch {
-            return null;
-          }
-        })()
-      : null;
-    const message = (data?.message ?? data?.error ?? raw) as string;
-    if (process.env.NODE_ENV !== "production") {
-      console.warn(`[use-task-options] ${path} -> HTTP ${res.status}: ${message}`);
-    }
-    throw new Error(message || "Erro ao buscar dados");
-  }
-  return res.json();
+  return requestJson<T>(path);
 }
 
 export function useTaskOptions(enabled: boolean): TaskOptions {
