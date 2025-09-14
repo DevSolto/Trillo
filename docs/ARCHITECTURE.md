@@ -30,7 +30,7 @@ Este documento descreve como o frontend está organizado na nova versão.
 ## Integração com a API externa
 
 - Proxy via `next.config.ts` converte chamadas a `/api/:path*` em `${NEXT_PUBLIC_API_URL}/:path*`
-- A especificação OpenAPI do backend está versionada em `openapi.pretty.json`
+- A documentação da API é mantida no backend; este repo não versiona OpenAPI
 
 ## Estilo, Lint e Testes
 
@@ -42,4 +42,3 @@ Este documento descreve como o frontend está organizado na nova versão.
 - Componentes: pastas coesas por domínio ou tela em `src/components`
 - Hooks: `use-*` e testes em `src/hooks/__tests__`
 - Variáveis públicas começam com `NEXT_PUBLIC_`
-

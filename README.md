@@ -22,7 +22,7 @@ Sistema web para escritórios de contabilidade que atendem múltiplas **associa�
 - API: Backend externo consumido via proxy do Next.js (`rewrites`)
   - Configure `NEXT_PUBLIC_API_URL` no `.env`
   - O arquivo `next.config.ts` reescreve `/api/:path*` para `${NEXT_PUBLIC_API_URL}/:path*`
-- Definição da API: OpenAPI disponível em `openapi.pretty.json`
+- Definição da API: a API é externa e sua documentação vive no repositório/ambiente do backend (não versionamos OpenAPI neste repo).
 
 —
 
@@ -45,12 +45,14 @@ src/
 │   └── (protected)/# Áreas autenticadas (dashboard, tarefas, associações, usuários)
 ├── components/     # Componentes reutilizáveis (UI e específicos de tela)
 ├── hooks/          # Hooks (ex.: responsividade, dados, utilitários)
-└── lib/            # Clientes (Supabase), middleware e utilitários
+├── lib/            # Clientes (Supabase), middleware, utilitários e enums compartilhados
+├── services/       # Camada de serviços (HTTP client/SSR + serviços por domínio)
+├── types/          # DTOs/Tipos compartilhados da API
+└── ...
 
 root
 ├── next.config.ts  # Rewrites para a API externa
 ├── middleware.ts   # Atualização de sessão (Supabase SSR)
-├── openapi*.json   # Especificação OpenAPI consumida pelo frontend
 └── vitest.config.ts# Configuração de testes
 ```
 
@@ -96,9 +98,10 @@ root
 
 ## 🔗 API e Integração
 
-- O frontend consome a API externa via proxy: requisições a `/api/*` são encaminhadas para `${NEXT_PUBLIC_API_URL}`
-- A especificação OpenAPI vive em `openapi.pretty.json` (legível) e `openapi.json`
-- Detalhes estão em `docs/API.md` (como atualizar, endpoints chave e convenções)
+- O frontend consome a API externa via proxy do Next.js: requisições a `/api/*` são reescritas para `${NEXT_PUBLIC_API_URL}` (ver `next.config.ts`).
+- Serviços do frontend ficam em `src/services/*` e usam helpers centralizados (`http.ts` para client e `http-server.ts` para SSR).
+- A documentação da API é mantida no backend; este frontend consome via proxy `/api/*`.
+- Detalhes adicionais em `docs/API.md`.
 
 —
 
@@ -123,5 +126,5 @@ root
 ## 📚 Leituras complementares
 
 - Arquitetura detalhada: `docs/ARCHITECTURE.md`
-- API e uso de OpenAPI: `docs/API.md`
+- API e integração: `docs/API.md`
 - Contribuição e fluxo de desenvolvimento: `CONTRIBUTING.md`
