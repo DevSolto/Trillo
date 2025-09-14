@@ -1,4 +1,0 @@
-- POST /api/tarefas/criar – cria uma tarefa.
-- GET /api/tarefas/buscar – lista tarefas.
-- PUT /api/tarefas/editar – atualiza uma tarefa existente.
-- DELETE /api/tarefas/deletar – remove uma tarefa
