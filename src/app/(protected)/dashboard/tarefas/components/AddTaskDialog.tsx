@@ -151,6 +151,7 @@ export function AddTaskDialog() {
           associationId: data.associacao,
           teamIds: Array.isArray(data.team) ? data.team : [],
           status: data.status,
+          priority: data.priority,
         },
       })
       notify({ type: 'success', title: 'Tarefa', message: 'Tarefa criada com sucesso.' })

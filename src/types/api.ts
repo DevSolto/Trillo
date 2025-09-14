@@ -17,6 +17,7 @@ export interface Association {
 }
 
 export type TaskStatus = 'open' | 'inProgress' | 'finished' | 'canceled'
+export type TaskPriority = 'low' | 'medium' | 'high'
 
 // Shape returned by backend for tasks in listings
 export interface TaskApi {
@@ -25,6 +26,7 @@ export interface TaskApi {
   title: string
   description: string
   status?: TaskStatus | null
+  priority?: TaskPriority | null
   dueDate?: string | null
   creator?: { id: string; name?: string; email?: string; role?: UserRole } | null
   association?: { id: string; name?: string; cnpj?: string; status?: boolean } | null
@@ -45,4 +47,3 @@ export type UpdateUserDto = Partial<CreateUserDto>
 
 export interface CreateAssociationDto { name: string; cnpj: string; status?: boolean }
 export type UpdateAssociationDto = Partial<CreateAssociationDto>
-
