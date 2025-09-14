@@ -1,5 +1,4 @@
 import { requestJson, requestVoid } from './http'
-import { requestJsonServer } from './http-server'
 import type { Association, CreateAssociationDto, UpdateAssociationDto, Paginated } from '@/types/api'
 
 export interface ListAssociationsQuery {
@@ -24,17 +23,7 @@ export async function listAssociations(q: ListAssociationsQuery = {}): Promise<P
   return requestJson<Paginated<Association>>(`/api/association?${params.toString()}`)
 }
 
-export async function listAssociationsServer(q: ListAssociationsQuery = {}): Promise<Paginated<Association>> {
-  const params = new URLSearchParams()
-  if (q.sortOrder) params.set('sortOrder', q.sortOrder)
-  if (q.sortBy) params.set('sortBy', q.sortBy)
-  if (q.limit) params.set('limit', String(q.limit))
-  if (q.page) params.set('page', String(q.page))
-  if (typeof q.status === 'boolean') params.set('status', String(q.status))
-  if (q.cnpj) params.set('cnpj', q.cnpj)
-  if (q.name) params.set('name', q.name)
-  return requestJsonServer<Paginated<Association>>(`/api/association?${params.toString()}`)
-}
+// Server-side variant moved to associations.server.ts to avoid client bundles pulling server-only code.
 
 export async function createAssociation(body: CreateAssociationDto): Promise<Association> {
   return requestJson<Association>('/api/association', { method: 'POST', body })

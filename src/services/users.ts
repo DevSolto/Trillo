@@ -1,5 +1,4 @@
 import { requestJson, requestVoid } from './http'
-import { requestJsonServer } from './http-server'
 import type { User, UserRole, Paginated, CreateUserDto, UpdateUserDto } from '@/types/api'
 
 export interface ListUsersQuery {
@@ -24,17 +23,7 @@ export async function listUsers(q: ListUsersQuery = {}): Promise<Paginated<User>
   return requestJson<Paginated<User>>(`/api/user?${params.toString()}`)
 }
 
-export async function listUsersServer(q: ListUsersQuery = {}): Promise<Paginated<User>> {
-  const params = new URLSearchParams()
-  if (q.sortOrder) params.set('sortOrder', q.sortOrder)
-  if (q.sortBy) params.set('sortBy', q.sortBy)
-  if (q.limit) params.set('limit', String(q.limit))
-  if (q.page) params.set('page', String(q.page))
-  if (q.role) params.set('role', q.role)
-  if (q.email) params.set('email', q.email)
-  if (q.name) params.set('name', q.name)
-  return requestJsonServer<Paginated<User>>(`/api/user?${params.toString()}`)
-}
+// Server-side variant moved to users.server.ts to avoid client bundles pulling server-only code.
 
 export async function createUser(body: CreateUserDto): Promise<User> {
   return requestJson<User>('/api/user', { method: 'POST', body })
