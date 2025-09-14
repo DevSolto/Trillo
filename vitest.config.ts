@@ -8,23 +8,15 @@ export default defineConfig({
     coverage: {
       reporter: ['text', 'html']
     },
-    deps: {
-      // externaliza o client pra não “quebrar” a classe
-      external: ['@prisma/client', '.prisma/client']
-    }
+    deps: {}
   },
   resolve: {
     alias: [
-      { find: '@/prisma', replacement: path.resolve(__dirname, 'prisma') },
       { find: '@', replacement: path.resolve(__dirname, 'src') }
     ]
   },
   // evita prebundle
-  optimizeDeps: {
-    exclude: ['@prisma/client', '.prisma/client']
-  },
+  optimizeDeps: {},
   // no SSR do Vite (usado por vitest), mantenha externo
-  ssr: {
-    external: ['@prisma/client', '.prisma/client']
-  }
+  ssr: {}
 })
