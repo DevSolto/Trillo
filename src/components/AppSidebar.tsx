@@ -1,96 +1,95 @@
-"use client"
+'use client';
 
-import * as React from "react"
+import * as React from 'react';
 import {
   AudioWaveform,
   Building2,
   Command,
-  Frame,
   GalleryVerticalEnd,
   LayoutDashboard,
   ListTodo,
-  Map,
-  PieChart,
-  Settings2,
   Users2,
-} from "lucide-react"
+  type LucideIcon,
+} from 'lucide-react';
 
-import { NavMain } from "@/components/NavMain"
-import { NavProjects } from "@/components/NavProjects"
-import { NavUser } from "@/components/NavUser"
-import { TeamSwitcher } from "@/components/TeamSwitcher"
+import type {
+  NavigationItem,
+  NavigationTeam,
+  NavigationUser,
+} from '@/config/navigation';
+import { NavMain } from '@/components/NavMain';
+import { NavUser } from '@/components/NavUser';
+import { TeamSwitcher } from '@/components/TeamSwitcher';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/Sidebar"
+} from '@/components/ui/Sidebar';
 
-// This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/next.svg",
-  },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      title: "Associações",
-      url: "/dashboard/associacoes",
-      icon: Building2,
-    },
-    {
-      title: "Tarefas",
-      url: "/dashboard/tarefas",
-      icon: ListTodo,
-    },
-    {
-      title: "Usuários",
-      url: "/dashboard/usuarios",
-      icon: Users2,
-    },
-  ]
-}
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  items: NavigationItem[];
+  user: NavigationUser;
+  teams?: NavigationTeam[];
+};
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type NavigationIconName = NonNullable<NavigationItem['icon']>;
+
+const navigationIcons: Record<NavigationIconName, LucideIcon> = {
+  LayoutDashboard,
+  Building2,
+  ListTodo,
+  Users2,
+};
+
+const teamLogos: Record<NavigationTeam['logo'], LucideIcon> = {
+  GalleryVerticalEnd,
+  AudioWaveform,
+  Command,
+};
+
+export function AppSidebar({ items, user, teams, ...props }: AppSidebarProps) {
+  const sidebarItems = React.useMemo<
+    React.ComponentProps<typeof NavMain>['items']
+  >(
+    () =>
+      items.map((item) => ({
+        ...item,
+        icon: item.icon ? navigationIcons[item.icon] : undefined,
+      })),
+    [items]
+  );
+
+  const sidebarTeams = React.useMemo<
+    React.ComponentProps<typeof TeamSwitcher>['teams']
+  >(
+    () =>
+      (teams ?? []).map((team) => ({
+        ...team,
+        logo: teamLogos[team.logo],
+      })),
+    [teams]
+  );
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <div className="flex items-center gap-2">
-
-          <h1 className="text-lg font-semibold">Econtese</h1>
-        </div>
+        {sidebarTeams.length > 0 ? (
+          <TeamSwitcher teams={sidebarTeams} />
+        ) : (
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-semibold">Econtese</h1>
+          </div>
+        )}
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={sidebarItems} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }
