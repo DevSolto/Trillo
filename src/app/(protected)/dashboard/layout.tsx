@@ -1,11 +1,12 @@
-import { AppSidebar } from "@/components/AppSidebar"
-import { DynamicBreadcrumb } from "@/components/DynamicBreadcrumb"
-import { Separator } from "@/components/ui/Separator"
+import { AppSidebar } from '@/components/AppSidebar';
+import { navMain, teams, user } from '@/config/navigation';
+import { DynamicBreadcrumb } from '@/components/DynamicBreadcrumb';
+import { Separator } from '@/components/ui/Separator';
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/Sidebar"
+} from '@/components/ui/Sidebar';
 
 export default function DashboardLayout({
   children,
@@ -14,7 +15,7 @@ export default function DashboardLayout({
 }>) {
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar items={navMain} teams={teams} user={user} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
@@ -26,10 +27,8 @@ export default function DashboardLayout({
             <DynamicBreadcrumb />
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          {children}
-        </div>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }
