@@ -127,7 +127,6 @@ export class HttpClient {
   private async createBaseHeaders(): Promise<Headers> {
     const headers = new Headers({ Accept: 'application/json' });
     const token = this.tokenProvider ? await this.tokenProvider() : undefined;
-    console.log('token', token);
 
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
