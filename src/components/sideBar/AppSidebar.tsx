@@ -12,13 +12,9 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
-import type {
-  NavigationItem,
-  NavigationTeam,
-  NavigationUser,
-} from '@/config/navigation';
-import { NavMain } from '@/components/NavMain';
-import { NavUser } from '@/components/NavUser';
+import type { NavigationItem, NavigationTeam } from '@/config/navigation';
+import { NavMain } from '@/components/sideBar/NavMain';
+import { NavUser } from '@/components/sideBar/NavUser';
 import { TeamSwitcher } from '@/components/TeamSwitcher';
 import {
   Sidebar,
@@ -27,10 +23,11 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/Sidebar';
+import { User } from '@/types/api';
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
   items: NavigationItem[];
-  user: NavigationUser;
+  user: User;
   teams?: NavigationTeam[];
 };
 

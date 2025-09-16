@@ -50,13 +50,16 @@ export default async function TarefasPage({
 
   // Normalize search params (supports Promise, URLSearchParams, or plain object)
   const sp: any = await searchParams;
-  const viewParam = typeof sp?.get === 'function'
-    ? sp.get('view')
-    : (Array.isArray(sp?.view) ? sp.view[0] : sp?.view);
+  const viewParam =
+    typeof sp?.get === 'function'
+      ? sp.get('view')
+      : Array.isArray(sp?.view)
+        ? sp.view[0]
+        : sp?.view;
   const view = viewParam === 'table' ? 'table' : 'kanban';
 
   return (
-    <div className="p-6">
+    <div className="p-6 max-h-full">
       <div className="mb-4 flex items-center gap-3">
         <h1 className="text-2xl font-semibold">Tarefas</h1>
         <div className="ml-auto">

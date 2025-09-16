@@ -1,12 +1,12 @@
-"use client"
+'use client';
 
-import { useState } from 'react'
-import { Loader2 } from 'lucide-react'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
+import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import {
   Dialog,
   DialogTrigger,
@@ -14,9 +14,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/Dialog'
-import { useNotification } from '@/components/NotificationProvider'
-import { useRouter } from 'next/navigation'
+} from '@/components/ui/Dialog';
+import { useNotification } from '@/components/NotificationProvider';
+import { useRouter } from 'next/navigation';
 import {
   Form,
   FormField,
@@ -24,58 +24,80 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from '@/components/ui/Form'
-import { updateUser } from '@/services/users'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select'
-import { UserRow } from './columns'
+} from '@/components/ui/Form';
+import { updateUser } from '@/services/usuarios/users';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/Select';
+import { UserRow } from './columns';
 
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Nome é obrigatório' }),
   email: z.string().email({ message: 'E-mail inválido' }),
   role: z.enum(['admin', 'editor']),
-})
+});
 
-interface Props { children: React.ReactNode; user: UserRow }
+interface Props {
+  children: React.ReactNode;
+  user: UserRow;
+}
 
 export function EditUserDialog({ children, user }: Props) {
-  const [open, setOpen] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const notify = useNotification()
-  const router = useRouter()
+  const [open, setOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const notify = useNotification();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { name: user.name, email: user.email, role: user.role as 'admin' | 'editor' },
+    defaultValues: {
+      name: user.name,
+      email: user.email,
+      role: user.role as 'admin' | 'editor',
+    },
     mode: 'onChange',
-  })
+  });
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    setIsLoading(true)
-    setError(null)
+    setIsLoading(true);
+    setError(null);
     try {
-      await updateUser(user.id, { name: data.name, email: data.email, role: data.role })
-      notify({ type: 'success', title: 'Usuário', message: 'Usuário atualizado com sucesso.' })
-      setOpen(false)
-      router.refresh()
+      await updateUser(user.id, {
+        name: data.name,
+        email: data.email,
+        role: data.role,
+      });
+      notify({
+        type: 'success',
+        title: 'Usuário',
+        message: 'Usuário atualizado com sucesso.',
+      });
+      setOpen(false);
+      router.refresh();
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Erro ao atualizar usuário')
+      setError(e instanceof Error ? e.message : 'Erro ao atualizar usuário');
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Editar Usuário</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 py-2">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4 py-2"
+          >
             <FormField
               control={form.control}
               name="name"
@@ -110,13 +132,13 @@ export function EditUserDialog({ children, user }: Props) {
                   <FormLabel>Perfil</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className='w-full'>
+                      <SelectTrigger className="w-full">
                         <SelectValue />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value='admin'>Admin</SelectItem>
-                      <SelectItem value='editor'>Editor</SelectItem>
+                      <SelectItem value="admin">Admin</SelectItem>
+                      <SelectItem value="editor">Editor</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -125,8 +147,20 @@ export function EditUserDialog({ children, user }: Props) {
             />
             {error && <p className="text-sm text-red-500">{error}</p>}
             <DialogFooter>
-              <Button variant="outline" type="button" onClick={() => { setOpen(false); form.reset() }}>Cancelar</Button>
-              <Button type="submit" disabled={!form.formState.isValid || isLoading}>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  form.reset();
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                disabled={!form.formState.isValid || isLoading}
+              >
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isLoading ? 'Salvando...' : 'Salvar'}
               </Button>
@@ -135,5 +169,5 @@ export function EditUserDialog({ children, user }: Props) {
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

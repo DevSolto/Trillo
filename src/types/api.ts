@@ -7,6 +7,7 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+  imageUrl: string;
 }
 
 export interface Association {

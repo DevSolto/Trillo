@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { Row } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { Row } from '@tanstack/react-table';
+import { MoreHorizontal } from 'lucide-react';
 
-import { Button } from "@/components/ui/Button";
+import { Button } from '@/components/ui/Button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu";
+} from '@/components/ui/DropdownMenu';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,18 +21,20 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/AlertDialog";
-import { useNotification } from "@/components/NotificationProvider";
-import { useRouter } from "next/navigation";
-import { deleteUser } from "@/services/users";
-import { UserRow } from "./columns";
-import { EditUserDialog } from "./edit-dialog";
+} from '@/components/ui/AlertDialog';
+import { useNotification } from '@/components/NotificationProvider';
+import { useRouter } from 'next/navigation';
+import { deleteUser } from '@/services/usuarios/users';
+import { UserRow } from './columns';
+import { EditUserDialog } from './edit-dialog';
 
 interface Props<TData extends UserRow> {
   row: Row<TData>;
 }
 
-export function DataTableRowActions<TData extends UserRow>({ row }: Props<TData>) {
+export function DataTableRowActions<TData extends UserRow>({
+  row,
+}: Props<TData>) {
   const user = row.original;
   const notify = useNotification();
   const router = useRouter();
@@ -40,17 +42,30 @@ export function DataTableRowActions<TData extends UserRow>({ row }: Props<TData>
   const handleDelete = async () => {
     try {
       await deleteUser(user.id);
-      notify({ type: "success", title: "Usuário", message: "Usuário excluído com sucesso." });
+      notify({
+        type: 'success',
+        title: 'Usuário',
+        message: 'Usuário excluído com sucesso.',
+      });
       router.refresh();
     } catch (error) {
-      notify({ type: "error", title: "Usuário", message: error instanceof Error ? error.message : "Erro ao excluir usuário" });
+      notify({
+        type: 'error',
+        title: 'Usuário',
+        message:
+          error instanceof Error ? error.message : 'Erro ao excluir usuário',
+      });
     }
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="data-[state=open]:bg-muted size-8">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="data-[state=open]:bg-muted size-8"
+        >
           <MoreHorizontal />
           <span className="sr-only">Abrir menu</span>
         </Button>
@@ -64,7 +79,10 @@ export function DataTableRowActions<TData extends UserRow>({ row }: Props<TData>
         <DropdownMenuSeparator />
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <DropdownMenuItem variant="destructive" onSelect={(e) => e.preventDefault()}>
+            <DropdownMenuItem
+              variant="destructive"
+              onSelect={(e) => e.preventDefault()}
+            >
               Excluir
             </DropdownMenuItem>
           </AlertDialogTrigger>
@@ -72,12 +90,15 @@ export function DataTableRowActions<TData extends UserRow>({ row }: Props<TData>
             <AlertDialogHeader>
               <AlertDialogTitle>Excluir usuário</AlertDialogTitle>
               <AlertDialogDescription>
-                Esta ação não pode ser desfeita. Tem certeza que deseja excluir este usuário?
+                Esta ação não pode ser desfeita. Tem certeza que deseja excluir
+                este usuário?
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
-              <AlertDialogAction onClick={handleDelete}>Excluir</AlertDialogAction>
+              <AlertDialogAction onClick={handleDelete}>
+                Excluir
+              </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
