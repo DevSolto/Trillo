@@ -25,6 +25,7 @@ export async function ensureAuthenticated(user?: User | null): Promise<User> {
 
 export async function authHeaders(extra?: HeadersInit): Promise<HeadersInit> {
   const token = await getAccessToken();
+  console.log('token', token);
   const h = new Headers(extra);
   if (token) h.set('Authorization', `Bearer ${token}`);
   return h;

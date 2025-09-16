@@ -1,3 +1,4 @@
+import { createClient } from '@/lib/client';
 import type { Logger } from '@/lib/logger';
 import { logger as defaultLogger } from '@/lib/logger';
 
@@ -126,10 +127,14 @@ export class HttpClient {
 
   private async createBaseHeaders(): Promise<Headers> {
     const headers = new Headers({ Accept: 'application/json' });
-    const token = this.tokenProvider ? await this.tokenProvider() : undefined;
 
+    const supabase = createClient();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const token = this.tokenProvider ? await this.tokenProvider() : undefined;
     if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
+      headers.set('Authorization', `Bearer ${session?.access_token}`);
     }
     return headers;
   }
