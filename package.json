@@ -69,7 +69,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "ESLINT_USE_FLAT_CONFIG=false eslint --fix",
+      "env ESLINT_USE_FLAT_CONFIG=false eslint --fix",
       "prettier --write"
     ],
     "*.{json,css,md}": [
